@@ -1,12 +1,35 @@
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Users, Vote, Wallet, Shield, FileText, TrendingUp, DollarSign, Calendar } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 const Index = () => {
+  const [progressValue, setProgressValue] = useState(0);
+  const [showCards, setShowCards] = useState([false, false, false, false]);
+
+  useEffect(() => {
+    // Animate progress bar
+    const timer = setTimeout(() => {
+      setProgressValue(53);
+    }, 500);
+
+    // Animate treasury cards one by one
+    const cardTimers = [
+      setTimeout(() => setShowCards(prev => [true, ...prev.slice(1)]), 300),
+      setTimeout(() => setShowCards(prev => [prev[0], true, ...prev.slice(2)]), 600),
+      setTimeout(() => setShowCards(prev => [...prev.slice(0, 2), true, prev[3]]), 900),
+      setTimeout(() => setShowCards(prev => [...prev.slice(0, 3), true]), 1200),
+    ];
+
+    return () => {
+      clearTimeout(timer);
+      cardTimers.forEach(clearTimeout);
+    };
+  }, []);
+
   const mockProposals = [
     {
       id: 1,
@@ -153,7 +176,7 @@ const Index = () => {
             </p>
           </div>
 
-          <div className="space-y-16">
+          <div className="space-y-24">
             {/* Treasury Management Demo */}
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               <div className="space-y-6">
@@ -183,7 +206,7 @@ const Index = () => {
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
-                <Card className="bg-gradient-to-br from-green-50 to-green-100 border-green-200">
+                <Card className={`bg-gradient-to-br from-green-50 to-green-100 border-green-200 transition-all duration-500 ${showCards[0] ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform translate-y-4'}`}>
                   <CardHeader className="pb-3">
                     <CardDescription className="text-green-700">Total Treasury</CardDescription>
                     <CardTitle className="text-2xl text-green-800">$45,230</CardTitle>
@@ -192,7 +215,7 @@ const Index = () => {
                     <p className="text-sm text-green-600">Example: Community Garden Co-op</p>
                   </CardContent>
                 </Card>
-                <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
+                <Card className={`bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200 transition-all duration-500 ${showCards[1] ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform translate-y-4'}`}>
                   <CardHeader className="pb-3">
                     <CardDescription className="text-blue-700">Monthly Budget</CardDescription>
                     <CardTitle className="text-2xl text-blue-800">$8,500</CardTitle>
@@ -201,7 +224,7 @@ const Index = () => {
                     <p className="text-sm text-blue-600">Allocated for operations</p>
                   </CardContent>
                 </Card>
-                <Card className="bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200">
+                <Card className={`bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200 transition-all duration-500 ${showCards[2] ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform translate-y-4'}`}>
                   <CardHeader className="pb-3">
                     <CardDescription className="text-purple-700">Active Proposals</CardDescription>
                     <CardTitle className="text-2xl text-purple-800">5</CardTitle>
@@ -210,7 +233,7 @@ const Index = () => {
                     <p className="text-sm text-purple-600">Awaiting member votes</p>
                   </CardContent>
                 </Card>
-                <Card className="bg-gradient-to-br from-orange-50 to-orange-100 border-orange-200">
+                <Card className={`bg-gradient-to-br from-orange-50 to-orange-100 border-orange-200 transition-all duration-500 ${showCards[3] ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform translate-y-4'}`}>
                   <CardHeader className="pb-3">
                     <CardDescription className="text-orange-700">Pending Payments</CardDescription>
                     <CardTitle className="text-2xl text-orange-800">$4,200</CardTitle>
@@ -248,7 +271,7 @@ const Index = () => {
                           <span>Votes: 24 / 45 members</span>
                           <span>Time left: 3 days</span>
                         </div>
-                        <Progress value={53} className="h-2" />
+                        <Progress value={progressValue} className="h-2 transition-all duration-1000 ease-out" />
                       </div>
                       <div className="flex gap-2 pt-2">
                         <Button size="sm" className="flex-1 bg-blue-600 hover:bg-blue-700">Vote Yes</Button>
@@ -318,7 +341,7 @@ const Index = () => {
                 <div className="grid grid-cols-3 gap-4">
                   <Card className="text-center bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200">
                     <CardContent className="p-4">
-                      <div className="w-8 h-8 bg-purple-200 rounded-full mx-auto mb-2 flex items-center justify-center">
+                      <div className="w-8 h-8 bg-purple-200 rounded-full mx-auto mb-2 flex items-center justify-center animate-[elastic_2s_ease-in-out_infinite]">
                         <span className="text-sm font-semibold text-purple-700">45</span>
                       </div>
                       <p className="text-xs text-purple-600">Active Members</p>
@@ -326,7 +349,7 @@ const Index = () => {
                   </Card>
                   <Card className="text-center bg-gradient-to-br from-green-50 to-green-100 border-green-200">
                     <CardContent className="p-4">
-                      <div className="w-8 h-8 bg-green-200 rounded-full mx-auto mb-2 flex items-center justify-center">
+                      <div className="w-8 h-8 bg-green-200 rounded-full mx-auto mb-2 flex items-center justify-center animate-[elastic_2s_ease-in-out_infinite_0.3s]">
                         <span className="text-sm font-semibold text-green-700">12</span>
                       </div>
                       <p className="text-xs text-green-600">Core Members</p>
@@ -334,7 +357,7 @@ const Index = () => {
                   </Card>
                   <Card className="text-center bg-gradient-to-br from-yellow-50 to-yellow-100 border-yellow-200">
                     <CardContent className="p-4">
-                      <div className="w-8 h-8 bg-yellow-200 rounded-full mx-auto mb-2 flex items-center justify-center">
+                      <div className="w-8 h-8 bg-yellow-200 rounded-full mx-auto mb-2 flex items-center justify-center animate-[elastic_2s_ease-in-out_infinite_0.6s]">
                         <span className="text-sm font-semibold text-yellow-700">8</span>
                       </div>
                       <p className="text-xs text-yellow-600">New Members</p>
@@ -451,3 +474,12 @@ const Index = () => {
 };
 
 export default Index;
+
+<style jsx>{`
+  @keyframes elastic {
+    0%, 100% { transform: scale(1); }
+    25% { transform: scale(1.1); }
+    50% { transform: scale(0.95); }
+    75% { transform: scale(1.05); }
+  }
+`}</style>
