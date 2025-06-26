@@ -13,7 +13,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 
 const ConnectWalletButton = () => {
   const location = useLocation();
-  const isDashboard = location.pathname === "/dashboard";
+  const isDashboard = location.pathname === "/dashboard" || location.pathname === "/profile";
   const [isConnected, setIsConnected] = useState(isDashboard);
   const [userAlias] = useState("John Doe"); // This would come from wallet connection
   const [walletAddress] = useState("0x742d35Cc6634C0532925a3b8D5c"); // This would come from wallet connection
@@ -27,6 +27,7 @@ const ConnectWalletButton = () => {
 
   const handleLogout = () => {
     setIsConnected(false);
+    navigate("/");
   };
 
   const handleProfile = () => {
@@ -37,15 +38,15 @@ const ConnectWalletButton = () => {
     return (
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="outline" className="flex items-center space-x-2 h-auto p-2">
-            <Avatar className="h-8 w-8">
-              <AvatarFallback className="text-sm bg-gradient-to-br from-blue-600 to-green-600 text-white">
+          <Button variant="outline" className="flex items-center space-x-2 h-10 px-4 pr-6">
+            <Avatar className="h-6 w-6">
+              <AvatarFallback className="text-xs bg-gradient-to-br from-blue-600 to-green-600 text-white">
                 {userAlias.split(' ').map(n => n[0]).join('')}
               </AvatarFallback>
             </Avatar>
             <div className="text-left">
-              <div className="text-sm font-medium">{userAlias}</div>
-              <div className="text-xs text-muted-foreground">{walletAddress.slice(0, 8)}...</div>
+              <div className="text-sm font-medium leading-tight">{userAlias}</div>
+              <div className="text-xs text-muted-foreground leading-tight">{walletAddress.slice(0, 8)}...</div>
             </div>
           </Button>
         </DropdownMenuTrigger>

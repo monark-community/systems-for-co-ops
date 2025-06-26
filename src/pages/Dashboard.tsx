@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -9,6 +10,7 @@ import ConnectWalletButton from "@/components/ConnectWalletButton";
 
 const Dashboard = () => {
   const userRole = "Member"; // This would come from authentication context
+  const userAlias = "John Doe"; // This should match the wallet button
   
   const myProposals = [
     {
@@ -71,18 +73,20 @@ const Dashboard = () => {
                 <Users className="h-6 w-6 text-white" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-gray-900">CoopDAO Dashboard</h1>
-                <p className="text-sm text-gray-600">Welcome back, Member</p>
+                <h1 className="text-xl font-bold text-gray-900">Dashboard</h1>
+                <p className="text-sm text-gray-600">Welcome back, {userAlias}</p>
               </div>
             </div>
-            <div className="flex items-center space-x-4">
-              <ConnectWalletButton />
+            <div className="flex items-center justify-center flex-1">
               <Button asChild>
                 <Link to="/proposal/new">
                   <Plus className="h-4 w-4 mr-2" />
                   New Proposal
                 </Link>
               </Button>
+            </div>
+            <div className="flex items-center">
+              <ConnectWalletButton />
             </div>
           </div>
         </div>

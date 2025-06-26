@@ -5,6 +5,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Users, ArrowLeft, Wallet, Vote, Calendar } from "lucide-react";
 import { Link } from "react-router-dom";
+import ConnectWalletButton from "@/components/ConnectWalletButton";
 
 const Profile = () => {
   const userAlias = "John Doe";
@@ -17,25 +18,32 @@ const Profile = () => {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <Button variant="ghost" size="sm" asChild>
-                <Link to="/dashboard">
-                  <ArrowLeft className="h-4 w-4 mr-2" />
-                  Back to Dashboard
-                </Link>
-              </Button>
-            </div>
-            <div className="flex items-center space-x-3">
               <div className="h-10 w-10 bg-gradient-to-br from-blue-600 to-green-600 rounded-lg flex items-center justify-center">
                 <Users className="h-6 w-6 text-white" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-gray-900">CoopDAO</h1>
-                <p className="text-sm text-gray-600">Profile</p>
+                <h1 className="text-xl font-bold text-gray-900">Profile</h1>
+                <p className="text-sm text-gray-600">Welcome back, {userAlias}</p>
               </div>
+            </div>
+            <div className="flex items-center">
+              <ConnectWalletButton />
             </div>
           </div>
         </div>
       </header>
+
+      {/* Secondary Navigation */}
+      <div className="bg-white/60 backdrop-blur-sm border-b border-gray-100">
+        <div className="container mx-auto px-4 py-2">
+          <Button variant="ghost" size="sm" asChild>
+            <Link to="/dashboard">
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back to Dashboard
+            </Link>
+          </Button>
+        </div>
+      </div>
 
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto space-y-8">
