@@ -9,10 +9,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { User, LogOut } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const ConnectWalletButton = () => {
-  const [isConnected, setIsConnected] = useState(false);
+  const location = useLocation();
+  const isDashboard = location.pathname === "/dashboard";
+  const [isConnected, setIsConnected] = useState(isDashboard);
   const [userAlias] = useState("John Doe"); // This would come from wallet connection
   const [walletAddress] = useState("0x742d35Cc6634C0532925a3b8D5c"); // This would come from wallet connection
   const navigate = useNavigate();

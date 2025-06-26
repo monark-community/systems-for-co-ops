@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -6,6 +5,7 @@ import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Users, Vote, Wallet, Plus, FileText, Clock } from "lucide-react";
 import { Link } from "react-router-dom";
+import ConnectWalletButton from "@/components/ConnectWalletButton";
 
 const Dashboard = () => {
   const userRole = "Member"; // This would come from authentication context
@@ -76,7 +76,7 @@ const Dashboard = () => {
               </div>
             </div>
             <div className="flex items-center space-x-4">
-              <Badge variant="outline">{userRole}</Badge>
+              <ConnectWalletButton />
               <Button asChild>
                 <Link to="/proposal/new">
                   <Plus className="h-4 w-4 mr-2" />
