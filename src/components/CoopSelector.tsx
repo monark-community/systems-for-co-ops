@@ -12,7 +12,7 @@ const CoopSelector = () => {
 
   return (
     <Select defaultValue="greenwood-coop">
-      <SelectTrigger className="w-auto min-w-[280px] border-0 p-0 h-auto bg-transparent hover:bg-gray-50 focus:ring-0">
+      <SelectTrigger className="w-auto border-0 p-0 h-auto bg-transparent hover:bg-gray-50 focus:ring-0">
         <div className="text-left">
           <SelectValue />
         </div>
