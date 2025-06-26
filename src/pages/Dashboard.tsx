@@ -5,7 +5,7 @@ import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Users, Vote, Wallet, Plus, FileText, Clock, ChevronRight, Check, X, Search } from "lucide-react";
+import { Users, Vote, Wallet, Plus, FileText, Clock, ChevronRight, Check, X, Search, TrendingUp } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import ConnectWalletButton from "@/components/ConnectWalletButton";
@@ -24,26 +24,43 @@ const Dashboard = () => {
     }));
   };
 
+  const handleStatCardClick = (statType: string) => {
+    switch(statType) {
+      case 'members':
+        navigate('/members');
+        break;
+      case 'proposals':
+        // Switch to proposals tab
+        break;
+      case 'voting-power':
+        // Switch to governance tab
+        break;
+      case 'participation':
+        // Switch to activity tab
+        break;
+    }
+  };
+
   const activeProposals = [
     {
       id: 1,
-      title: "Community Garden Equipment Purchase",
-      description: "Funding for new gardening tools and equipment for our community garden project",
+      title: "Rooftop Garden Installation",
+      description: "Install a community rooftop garden with raised beds, irrigation system, and tool storage for all residents to enjoy",
       status: "active",
       votes: 24,
       totalVotes: 45,
-      amount: "$2,500",
+      amount: "$8,500",
       createdAt: "2024-12-20T10:30:00Z",
       category: "Infrastructure"
     },
     {
       id: 2,
-      title: "Monthly Food Distribution Coordinator",
-      description: "Hire part-time coordinator for our monthly food distribution program",
+      title: "Building Maintenance Coordinator",
+      description: "Hire a part-time resident coordinator to oversee daily maintenance requests and vendor relationships",
       status: "active",
       votes: 18,
       totalVotes: 45,
-      amount: "$1,800/month",
+      amount: "$2,200/month",
       createdAt: "2024-12-19T14:15:00Z",
       category: "Personnel"
     }
@@ -52,21 +69,23 @@ const Dashboard = () => {
   const myProposals = [
     {
       id: 3,
-      title: "Equipment Maintenance Fund",
+      title: "Lobby Renovation Project",
+      description: "Modernize the building lobby with new flooring, lighting, seating area, and mailbox system to enhance the entrance experience",
       status: "active",
       votes: 12,
       totalVotes: 45,
       createdAt: "2024-12-18T09:00:00Z",
-      category: "Maintenance"
+      category: "Infrastructure"
     },
     {
       id: 4,
-      title: "Community Event Sponsorship",
+      title: "Community Event Fund",
+      description: "Establish a quarterly fund for resident social events including holiday parties, building picnics, and welcome gatherings",
       status: "passed",
       votes: 38,
       totalVotes: 45,
       createdAt: "2024-12-15T16:45:00Z",
-      category: "Events"
+      category: "Community"
     }
   ];
 
@@ -79,16 +98,6 @@ const Dashboard = () => {
       hour: '2-digit',
       minute: '2-digit'
     });
-  };
-
-  const getBadgeVariant = (status: string) => {
-    switch (status) {
-      case 'active': return 'default';
-      case 'passed': return 'secondary';
-      case 'denied': return 'destructive';
-      case 'abandoned': return 'outline';
-      default: return 'default';
-    }
   };
 
   const getBadgeClass = (status: string) => {
@@ -117,16 +126,16 @@ const Dashboard = () => {
                 <ChevronRight className="h-4 w-4" />
               </h4>
             </Link>
-            {proposal.description && (
-              <p className="text-sm text-gray-600 mt-1">{proposal.description}</p>
-            )}
-            <p className="text-xs text-gray-500 mt-2">
-              <Clock className="h-3 w-3 inline mr-1" />
+            <p className="text-xs text-gray-500 mt-1 flex items-center">
+              <Clock className="h-3 w-3 mr-1" />
               {formatDate(proposal.createdAt)}
             </p>
+            {proposal.description && (
+              <p className="text-sm text-gray-600 mt-2">{proposal.description}</p>
+            )}
           </div>
           <Badge className={getBadgeClass(proposal.status)}>
-            {proposal.status}
+            {proposal.status.charAt(0).toUpperCase() + proposal.status.slice(1)}
           </Badge>
         </div>
         <div className="space-y-2">
@@ -141,26 +150,26 @@ const Dashboard = () => {
                 size="sm" 
                 className={`flex-1 ${
                   userVote === 'agree' 
-                    ? 'bg-green-100 text-green-800 hover:bg-green-200' 
-                    : ''
+                    ? 'bg-green-100 text-green-800 hover:bg-green-200 border-green-300' 
+                    : 'border'
                 }`}
-                variant={userVote === 'agree' ? 'outline' : 'default'}
+                variant="outline"
                 onClick={() => handleVote(proposal.id, 'agree')}
               >
-                {userVote === 'agree' && <Check className="h-4 w-4 mr-1" />}
+                <Check className="h-4 w-4 mr-1" />
                 Agree
               </Button>
               <Button 
                 size="sm" 
                 className={`flex-1 ${
                   userVote === 'deny' 
-                    ? 'bg-red-100 text-red-800 hover:bg-red-200' 
-                    : ''
+                    ? 'bg-red-100 text-red-800 hover:bg-red-200 border-red-300' 
+                    : 'border'
                 }`}
-                variant={userVote === 'deny' ? 'outline' : 'outline'}
+                variant="outline"
                 onClick={() => handleVote(proposal.id, 'deny')}
               >
-                {userVote === 'deny' && <X className="h-4 w-4 mr-1" />}
+                <X className="h-4 w-4 mr-1" />
                 Deny
               </Button>
             </div>
@@ -174,14 +183,14 @@ const Dashboard = () => {
     {
       id: 1,
       action: "Voted on",
-      proposal: "Community Garden Equipment",
+      proposal: "Rooftop Garden Installation",
       time: "2 hours ago",
       type: "vote"
     },
     {
       id: 2,
       action: "Created proposal",
-      proposal: "Equipment Maintenance Fund",
+      proposal: "Lobby Renovation Project",
       time: "2 days ago",
       type: "create"
     },
@@ -197,7 +206,7 @@ const Dashboard = () => {
   const memberStats = {
     totalMembers: 45,
     activeProposals: 5,
-    myVotingPower: "2.2%",
+    myVotingPower: "2.8%",
     participationRate: "87%"
   };
 
@@ -232,7 +241,7 @@ const Dashboard = () => {
       <div className="container mx-auto px-4 py-8">
         {/* Stats Overview */}
         <div className="grid md:grid-cols-4 gap-6 mb-8">
-          <Card>
+          <Card className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => handleStatCardClick('members')}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Total Members</CardTitle>
               <Users className="h-4 w-4 text-muted-foreground" />
@@ -243,7 +252,7 @@ const Dashboard = () => {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => handleStatCardClick('proposals')}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Active Proposals</CardTitle>
               <Vote className="h-4 w-4 text-muted-foreground" />
@@ -254,21 +263,21 @@ const Dashboard = () => {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => handleStatCardClick('voting-power')}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">My Voting Power</CardTitle>
               <Wallet className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-green-600">{memberStats.myVotingPower}</div>
-              <p className="text-xs text-muted-foreground">Based on participation</p>
+              <p className="text-xs text-muted-foreground">Based on unit value</p>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => handleStatCardClick('participation')}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Participation Rate</CardTitle>
-              <FileText className="h-4 w-4 text-muted-foreground" />
+              <TrendingUp className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-purple-600">{memberStats.participationRate}</div>
@@ -304,11 +313,12 @@ const Dashboard = () => {
 
         {/* Main Content Tabs */}
         <Tabs defaultValue="proposals" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="proposals">Active Proposals</TabsTrigger>
             <TabsTrigger value="my-proposals">My Proposals</TabsTrigger>
             <TabsTrigger value="treasury">Treasury</TabsTrigger>
-            <TabsTrigger value="activity">Recent Activity</TabsTrigger>
+            <TabsTrigger value="governance">Governance</TabsTrigger>
+            <TabsTrigger value="activity">Activity</TabsTrigger>
           </TabsList>
 
           <TabsContent value="proposals" className="space-y-6">
@@ -349,31 +359,46 @@ const Dashboard = () => {
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="space-y-4">
                     <h4 className="font-semibold">Current Balance</h4>
-                    <div className="text-3xl font-bold text-green-600">$45,230</div>
+                    <div className="text-3xl font-bold text-green-600">$142,500</div>
                     <p className="text-sm text-gray-600">Available for new proposals</p>
                   </div>
                   <div className="space-y-4">
-                    <h4 className="font-semibold">Monthly Allocation</h4>
-                    <div className="text-3xl font-bold">$8,500</div>
-                    <Progress value={65} className="h-2" />
-                    <p className="text-sm text-gray-600">65% of monthly budget allocated</p>
+                    <h4 className="font-semibold">Monthly Reserve Fund</h4>
+                    <div className="text-3xl font-bold">$12,800</div>
+                    <Progress value={75} className="h-2" />
+                    <p className="text-sm text-gray-600">75% of monthly maintenance budget allocated</p>
                   </div>
                 </div>
-                <div className="mt-6 pt-6 border-t">
-                  <h4 className="font-semibold mb-4">Recent Transactions</h4>
-                  <div className="space-y-3">
-                    <div className="flex justify-between items-center py-2">
-                      <span className="text-sm">Website Redesign Initiative</span>
-                      <span className="text-sm font-medium text-green-600">-$3,200</span>
-                    </div>
-                    <div className="flex justify-between items-center py-2">
-                      <span className="text-sm">Monthly Coordinator Payment</span>
-                      <span className="text-sm font-medium text-green-600">-$1,800</span>
-                    </div>
-                    <div className="flex justify-between items-center py-2">
-                      <span className="text-sm">Member Contribution - Alice</span>
-                      <span className="text-sm font-medium text-blue-600">+$500</span>
-                    </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="governance" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Voting Power & Governance</CardTitle>
+                <CardDescription>Understanding your influence in cooperative decisions</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div className="space-y-4">
+                    <h4 className="font-semibold">Your Voting Power</h4>
+                    <div className="text-3xl font-bold text-green-600">2.8%</div>
+                    <p className="text-sm text-gray-600">Based on your unit value relative to total building value</p>
+                  </div>
+                  <div className="space-y-4">
+                    <h4 className="font-semibold">Your Unit Value</h4>
+                    <div className="text-3xl font-bold">$485,000</div>
+                    <p className="text-sm text-gray-600">Out of $17.3M total building value</p>
+                  </div>
+                </div>
+                <div className="border-t pt-6">
+                  <h4 className="font-semibold mb-4">How Voting Power Works</h4>
+                  <div className="space-y-3 text-sm text-gray-600">
+                    <p>• Voting power is proportional to your unit's assessed value</p>
+                    <p>• All major building decisions require 60% approval by voting power</p>
+                    <p>• Maintenance and operational decisions require simple majority</p>
+                    <p>• Emergency repairs can be approved by board with 24-hour notice</p>
                   </div>
                 </div>
               </CardContent>
@@ -381,34 +406,62 @@ const Dashboard = () => {
           </TabsContent>
 
           <TabsContent value="activity" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Recent Activity</CardTitle>
-                <CardDescription>Your participation in cooperative governance</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {recentActivity.map((activity) => (
-                    <div key={activity.id} className="flex items-center space-x-4 py-3 border-b last:border-b-0">
-                      <div className="flex-shrink-0">
-                        {activity.type === 'vote' && <Vote className="h-5 w-5 text-blue-600" />}
-                        {activity.type === 'create' && <Plus className="h-5 w-5 text-green-600" />}
-                        {activity.type === 'payment' && <Wallet className="h-5 w-5 text-purple-600" />}
-                      </div>
-                      <div className="flex-1">
-                        <p className="text-sm font-medium">
-                          {activity.action} "{activity.proposal}"
-                        </p>
-                        <p className="text-xs text-gray-600 flex items-center mt-1">
-                          <Clock className="h-3 w-3 mr-1" />
-                          {activity.time}
-                        </p>
-                      </div>
+            <div className="grid gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Participation Analytics</CardTitle>
+                  <CardDescription>Your engagement in cooperative governance</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid md:grid-cols-3 gap-6">
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-blue-600">12</div>
+                      <p className="text-sm text-gray-600">Proposals Voted On</p>
+                      <p className="text-xs text-gray-500">Last 30 days</p>
                     </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-purple-600">87%</div>
+                      <p className="text-sm text-gray-600">Participation Rate</p>
+                      <p className="text-xs text-gray-500">Above building average</p>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-green-600">4</div>
+                      <p className="text-sm text-gray-600">Proposals Created</p>
+                      <p className="text-xs text-gray-500">This year</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Recent Activity</CardTitle>
+                  <CardDescription>Your latest actions in the cooperative</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {recentActivity.map((activity) => (
+                      <div key={activity.id} className="flex items-center space-x-4 py-3 border-b last:border-b-0">
+                        <div className="flex-shrink-0">
+                          {activity.type === 'vote' && <Vote className="h-5 w-5 text-blue-600" />}
+                          {activity.type === 'create' && <Plus className="h-5 w-5 text-green-600" />}
+                          {activity.type === 'payment' && <Wallet className="h-5 w-5 text-purple-600" />}
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-sm font-medium">
+                            {activity.action} "{activity.proposal}"
+                          </p>
+                          <p className="text-xs text-gray-600 flex items-center mt-1">
+                            <Clock className="h-3 w-3 mr-1" />
+                            {activity.time}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
           </TabsContent>
         </Tabs>
       </div>
