@@ -1,5 +1,4 @@
 
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
@@ -9,23 +8,20 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { User, LogOut } from "lucide-react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useWallet } from "@/contexts/WalletContext";
 
 const ConnectWalletButton = () => {
-  const location = useLocation();
-  const isDashboard = location.pathname === "/dashboard" || location.pathname === "/profile";
-  const [isConnected, setIsConnected] = useState(isDashboard);
-  const [userAlias] = useState("John Doe");
-  const [walletAddress] = useState("0x742d35Cc6634C0532925a3b8D5c");
+  const { isConnected, userAlias, walletAddress, connect, disconnect } = useWallet();
   const navigate = useNavigate();
 
   const handleConnect = () => {
-    setIsConnected(true);
+    connect();
     navigate("/dashboard");
   };
 
   const handleLogout = () => {
-    setIsConnected(false);
+    disconnect();
     navigate("/");
   };
 

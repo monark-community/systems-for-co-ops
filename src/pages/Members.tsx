@@ -1,11 +1,10 @@
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Users, ArrowLeft, Search, User, ChevronLeft, ChevronRight } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import ConnectWalletButton from "@/components/ConnectWalletButton";
 import {
@@ -20,6 +19,7 @@ import {
 const Members = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const navigate = useNavigate();
   
   const members = [
     {
@@ -140,6 +140,10 @@ const Members = () => {
     }
   };
 
+  const handleMemberClick = (memberId: number) => {
+    navigate(`/member/${memberId}`);
+  };
+
   const totalResults = filteredMembers.length;
   const resultsText = `Showing ${totalResults} member${totalResults !== 1 ? 's' : ''}`;
 
@@ -201,7 +205,11 @@ const Members = () => {
           {/* Members List */}
           <div className="space-y-2">
             {filteredMembers.map((member) => (
-              <Card key={member.id} className="hover:shadow-md transition-shadow cursor-pointer">
+              <Card 
+                key={member.id} 
+                className="hover:shadow-md transition-shadow cursor-pointer"
+                onClick={() => handleMemberClick(member.id)}
+              >
                 <CardContent className="p-6">
                   <div className="grid grid-cols-12 gap-4 items-center">
                     {/* Member Info */}

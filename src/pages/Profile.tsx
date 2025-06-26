@@ -1,15 +1,14 @@
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Users, ArrowLeft, Wallet, Vote, Calendar } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useWallet } from "@/contexts/WalletContext";
 import ConnectWalletButton from "@/components/ConnectWalletButton";
 
 const Profile = () => {
-  const userAlias = "John Doe";
-  const walletAddress = "0x742d35Cc6634C0532925a3b8D5c";
+  const { userAlias, walletAddress } = useWallet();
   
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50">
@@ -63,7 +62,7 @@ const Profile = () => {
                     <span>{walletAddress}</span>
                   </CardDescription>
                   <div className="flex items-center space-x-2 mt-2">
-                    <Badge>Core Member</Badge>
+                    <Badge>Secretary</Badge>
                     <Badge variant="outline">Active</Badge>
                   </div>
                 </div>
@@ -90,8 +89,8 @@ const Profile = () => {
                 <Wallet className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">2.2%</div>
-                <p className="text-xs text-muted-foreground">Based on participation</p>
+                <div className="text-2xl font-bold">2.8%</div>
+                <p className="text-xs text-muted-foreground">Based on unit value</p>
               </CardContent>
             </Card>
 
