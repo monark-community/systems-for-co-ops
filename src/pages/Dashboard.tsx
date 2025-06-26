@@ -9,6 +9,7 @@ import { Users, Vote, Wallet, Plus, FileText, Clock, ChevronRight, Check, X, Sea
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import ConnectWalletButton from "@/components/ConnectWalletButton";
+import CoopSelector from "@/components/CoopSelector";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -223,7 +224,7 @@ const Dashboard = () => {
               </div>
               <div>
                 <h1 className="text-xl font-bold text-gray-900">Dashboard</h1>
-                <p className="text-sm text-gray-600">Welcome back, {userAlias}</p>
+                <CoopSelector />
               </div>
             </div>
             <div className="flex items-center gap-4">

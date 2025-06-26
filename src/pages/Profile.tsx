@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -6,6 +7,7 @@ import { Users, ArrowLeft, Wallet, Vote, Calendar } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useWallet } from "@/contexts/WalletContext";
 import ConnectWalletButton from "@/components/ConnectWalletButton";
+import CoopSelector from "@/components/CoopSelector";
 
 const Profile = () => {
   const { userAlias, walletAddress } = useWallet();
@@ -22,7 +24,7 @@ const Profile = () => {
               </div>
               <div>
                 <h1 className="text-xl font-bold text-gray-900">Profile</h1>
-                <p className="text-sm text-gray-600">Welcome back, {userAlias}</p>
+                <CoopSelector />
               </div>
             </div>
             <div className="flex items-center">

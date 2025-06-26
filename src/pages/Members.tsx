@@ -1,151 +1,176 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Users, ArrowLeft, Search, User, ChevronLeft, ChevronRight } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { 
+  Users, 
+  ArrowLeft, 
+  Search, 
+  Calendar, 
+  Wallet,
+  ChevronLeft,
+  ChevronRight
+} from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import ConnectWalletButton from "@/components/ConnectWalletButton";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
+import CoopSelector from "@/components/CoopSelector";
+
+interface Member {
+  id: string;
+  name: string;
+  unit: string;
+  role: string;
+  votingPower: string;
+  memberSince: string;
+  status: 'active' | 'inactive';
+  avatar: string;
+}
+
+const mockMembers: Member[] = [
+  {
+    id: "john-doe",
+    name: "John Doe",
+    unit: "12A",
+    role: "Secretary",
+    votingPower: "2.8%",
+    memberSince: "Jan 2024",
+    status: "active",
+    avatar: "JD"
+  },
+  {
+    id: "sarah-chen",
+    name: "Sarah Chen",
+    unit: "5B",
+    role: "Board Member",
+    votingPower: "3.2%",
+    memberSince: "Mar 2023",
+    status: "active",
+    avatar: "SC"
+  },
+  {
+    id: "michael-rodriguez",
+    name: "Michael Rodriguez",
+    unit: "8C",
+    role: "Treasurer",
+    votingPower: "2.1%",
+    memberSince: "Aug 2023",
+    status: "active",
+    avatar: "MR"
+  },
+  {
+    id: "emily-johnson",
+    name: "Emily Johnson",
+    unit: "15A",
+    role: "Member",
+    votingPower: "1.9%",
+    memberSince: "Dec 2022",
+    status: "active",
+    avatar: "EJ"
+  },
+  {
+    id: "david-kim",
+    name: "David Kim",
+    unit: "3D",
+    role: "Vice President",
+    votingPower: "4.1%",
+    memberSince: "Feb 2022",
+    status: "active",
+    avatar: "DK"
+  },
+  {
+    id: "lisa-thompson",
+    name: "Lisa Thompson",
+    unit: "22B",
+    role: "Member",
+    votingPower: "2.3%",
+    memberSince: "Jun 2023",
+    status: "active",
+    avatar: "LT"
+  },
+  {
+    id: "robert-wilson",
+    name: "Robert Wilson",
+    unit: "7F",
+    role: "President",
+    votingPower: "3.7%",
+    memberSince: "Jan 2021",
+    status: "active",
+    avatar: "RW"
+  },
+  {
+    id: "maria-garcia",
+    name: "Maria Garcia",
+    unit: "18C",
+    role: "Member",
+    votingPower: "2.6%",
+    memberSince: "Sep 2023",
+    status: "active",
+    avatar: "MG"
+  },
+  {
+    id: "james-brown",
+    name: "James Brown",
+    unit: "11E",
+    role: "Member",
+    votingPower: "1.8%",
+    memberSince: "Nov 2022",
+    status: "inactive",
+    avatar: "JB"
+  },
+  {
+    id: "jennifer-davis",
+    name: "Jennifer Davis",
+    unit: "4A",
+    role: "Member",
+    votingPower: "2.4%",
+    memberSince: "Apr 2023",
+    status: "active",
+    avatar: "JD"
+  }
+];
 
 const Members = () => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [currentPage, setCurrentPage] = useState(1);
+  const membersPerPage = 10;
   
-  const members = [
-    {
-      id: 1,
-      name: "John Doe",
-      alias: "JD",
-      unitNumber: "12A", 
-      votingPower: "2.8%",
-      unitValue: "$485,000",
-      joinedDate: "Jan 2024",
-      role: "Secretary"
-    },
-    {
-      id: 2,
-      name: "Sarah Chen",
-      alias: "SC",
-      unitNumber: "5B",
-      votingPower: "3.2%",
-      unitValue: "$550,000",
-      joinedDate: "Mar 2023",
-      role: "Board Member"
-    },
-    {
-      id: 3,
-      name: "Michael Rodriguez",
-      alias: "MR",
-      unitNumber: "8C",
-      votingPower: "2.1%",
-      unitValue: "$365,000",
-      joinedDate: "Aug 2023",
-      role: "Treasurer"
-    },
-    {
-      id: 4,
-      name: "Emily Johnson",
-      alias: "EJ",
-      unitNumber: "15A",
-      votingPower: "2.9%",
-      unitValue: "$495,000",
-      joinedDate: "Dec 2022",
-      role: "Member"
-    },
-    {
-      id: 5,
-      name: "David Kim",
-      alias: "DK",
-      unitNumber: "3D",
-      votingPower: "1.8%",
-      unitValue: "$315,000",
-      joinedDate: "Jun 2024",
-      role: "Member"
-    },
-    {
-      id: 6,
-      name: "Lisa Thompson",
-      alias: "LT",
-      unitNumber: "22B",
-      votingPower: "4.1%",
-      unitValue: "$705,000",
-      joinedDate: "Feb 2022",
-      role: "President"
-    },
-    {
-      id: 7,
-      name: "James Wilson",
-      alias: "JW",
-      unitNumber: "7A",
-      votingPower: "2.3%",
-      unitValue: "$395,000",
-      joinedDate: "Sep 2023",
-      role: "Member"
-    },
-    {
-      id: 8,
-      name: "Maria Garcia",
-      alias: "MG",
-      unitNumber: "11C",
-      votingPower: "2.6%",
-      unitValue: "$445,000",
-      joinedDate: "Apr 2024",
-      role: "Member"
-    },
-    {
-      id: 9,
-      name: "Robert Brown",
-      alias: "RB",
-      unitNumber: "18D",
-      votingPower: "3.5%",
-      unitValue: "$605,000",
-      joinedDate: "Nov 2021",
-      role: "Vice President"
-    },
-    {
-      id: 10,
-      name: "Amanda Davis",
-      alias: "AD",
-      unitNumber: "4B",
-      votingPower: "2.4%",
-      unitValue: "$415,000",
-      joinedDate: "Jul 2023",
-      role: "Member"
-    }
-  ];
+  const filteredMembers = mockMembers.filter(member => {
+    const matchesSearch = member.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         member.unit.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesStatus = statusFilter === "all" || member.status === statusFilter;
+    return matchesSearch && matchesStatus;
+  });
 
-  const filteredMembers = members.filter(member =>
-    member.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    member.unitNumber.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const totalPages = Math.ceil(filteredMembers.length / membersPerPage);
+  const startIndex = (currentPage - 1) * membersPerPage;
+  const endIndex = startIndex + membersPerPage;
+  const currentMembers = filteredMembers.slice(startIndex, endIndex);
 
-  const getRoleBadgeClass = (role: string) => {
-    switch (role) {
-      case 'President': return 'bg-purple-100 text-purple-800 border-purple-300';
-      case 'Vice President': return 'bg-blue-100 text-blue-800 border-blue-300';
-      case 'Secretary': return 'bg-green-100 text-green-800 border-green-300';
-      case 'Treasurer': return 'bg-orange-100 text-orange-800 border-orange-300';
-      case 'Board Member': return 'bg-indigo-100 text-indigo-800 border-indigo-300';
-      default: return 'bg-gray-100 text-gray-600 border-gray-300';
-    }
-  };
-
-  const handleMemberClick = (memberId: number) => {
+  const handleMemberClick = (memberId: string) => {
     navigate(`/member/${memberId}`);
   };
 
-  const totalResults = filteredMembers.length;
-  const resultsText = `Showing ${totalResults} member${totalResults !== 1 ? 's' : ''}`;
+  const getRoleBadgeClass = (role: string) => {
+    switch (role.toLowerCase()) {
+      case 'president':
+        return 'bg-purple-100 text-purple-800 border-purple-300';
+      case 'vice president':
+        return 'bg-blue-100 text-blue-800 border-blue-300';
+      case 'treasurer':
+        return 'bg-green-100 text-green-800 border-green-300';
+      case 'secretary':
+        return 'bg-orange-100 text-orange-800 border-orange-300';
+      case 'board member':
+        return 'bg-indigo-100 text-indigo-800 border-indigo-300';
+      default:
+        return 'bg-gray-100 text-gray-800 border-gray-300';
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50">
@@ -159,12 +184,10 @@ const Members = () => {
               </div>
               <div>
                 <h1 className="text-xl font-bold text-gray-900">Members</h1>
-                <p className="text-sm text-gray-600">Cooperative member directory</p>
+                <CoopSelector />
               </div>
             </div>
-            <div className="flex items-center gap-4">
-              <ConnectWalletButton />
-            </div>
+            <ConnectWalletButton />
           </div>
         </div>
       </header>
@@ -183,113 +206,132 @@ const Members = () => {
 
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-6xl mx-auto space-y-6">
-          {/* Search */}
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-            <Input
-              placeholder="Search members by name or unit..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 max-w-md"
-            />
+          {/* Search and Filter */}
+          <div className="flex gap-4 mb-6">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+              <Input
+                placeholder="Search members..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+            <Select value={statusFilter} onValueChange={setStatusFilter}>
+              <SelectTrigger className="w-48">
+                <SelectValue placeholder="Filter by status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Members</SelectItem>
+                <SelectItem value="active">Active</SelectItem>
+                <SelectItem value="inactive">Inactive</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
-          {/* Table Headers */}
-          <div className="grid grid-cols-12 gap-4 px-6 py-3 text-sm font-medium text-gray-600 bg-gray-50 rounded-lg">
-            <div className="col-span-4">Member</div>
-            <div className="col-span-3">Role</div>
-            <div className="col-span-2">Voting Power</div>
-            <div className="col-span-3">Member Since</div>
-          </div>
+          {/* Members Table */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center justify-between">
+                <span>Cooperative Members</span>
+                <span className="text-sm font-normal text-gray-600">
+                  {filteredMembers.length} members total
+                </span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-0">
+              {/* Table Header */}
+              <div className="grid grid-cols-12 gap-4 px-6 py-3 bg-gray-50 border-b font-medium text-sm text-gray-700">
+                <div className="col-span-4">Member</div>
+                <div className="col-span-2">Role</div>
+                <div className="col-span-3">Voting Power</div>
+                <div className="col-span-3">Member Since</div>
+              </div>
 
-          {/* Members List */}
-          <div className="space-y-2">
-            {filteredMembers.map((member) => (
-              <Card 
-                key={member.id} 
-                className="hover:shadow-md transition-shadow cursor-pointer"
-                onClick={() => handleMemberClick(member.id)}
-              >
-                <CardContent className="p-6">
-                  <div className="grid grid-cols-12 gap-4 items-center">
+              {/* Table Body */}
+              <div className="divide-y">
+                {currentMembers.map((member) => (
+                  <div
+                    key={member.id}
+                    className="grid grid-cols-12 gap-4 px-6 py-4 hover:bg-gray-50 cursor-pointer transition-colors"
+                    onClick={() => handleMemberClick(member.id)}
+                  >
                     {/* Member Info */}
-                    <div className="col-span-4 flex items-center space-x-4">
-                      <Avatar className="h-12 w-12">
+                    <div className="col-span-4 flex items-center space-x-3">
+                      <Avatar className="h-10 w-10">
                         <AvatarFallback className="bg-gradient-to-br from-blue-600 to-green-600 text-white">
-                          {member.alias}
+                          {member.avatar}
                         </AvatarFallback>
                       </Avatar>
                       <div>
-                        <div className="font-medium text-gray-900">{member.name}</div>
-                        <div className="text-sm text-gray-600">Unit {member.unitNumber}</div>
+                        <p className="font-medium text-gray-900">{member.name}</p>
+                        <p className="text-sm text-gray-500">Unit {member.unit}</p>
                       </div>
                     </div>
-                    
-                    {/* Role Badge */}
-                    <div className="col-span-3">
-                      <Badge className={`${getRoleBadgeClass(member.role)} w-fit`}>
+
+                    {/* Role */}
+                    <div className="col-span-2 flex items-center">
+                      <Badge className={getRoleBadgeClass(member.role)} variant="outline">
                         {member.role}
                       </Badge>
                     </div>
-                    
+
                     {/* Voting Power */}
-                    <div className="col-span-2 font-medium text-gray-900">
-                      {member.votingPower}
+                    <div className="col-span-3 flex items-center text-sm">
+                      <Wallet className="h-4 w-4 mr-2 text-gray-400" />
+                      <span className="font-medium">{member.votingPower}</span>
                     </div>
-                    
+
                     {/* Member Since */}
-                    <div className="col-span-3 text-gray-600">
-                      {member.joinedDate}
+                    <div className="col-span-3 flex items-center text-sm">
+                      <Calendar className="h-4 w-4 mr-2 text-gray-400" />
+                      <span>{member.memberSince}</span>
                     </div>
                   </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+                ))}
+              </div>
 
-          {filteredMembers.length === 0 && (
-            <div className="text-center py-8">
-              <User className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <p className="text-gray-600">No members found matching your search.</p>
-            </div>
-          )}
-
-          {/* Pagination */}
-          {filteredMembers.length > 0 && (
-            <div className="flex items-center justify-between">
-              <p className="text-sm text-gray-600">{resultsText}</p>
-              
-              <Pagination>
-                <PaginationContent>
-                  <PaginationItem>
-                    <PaginationPrevious 
-                      href="#" 
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setCurrentPage(Math.max(1, currentPage - 1));
-                      }}
-                      className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
-                    />
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink href="#" isActive>
-                      1
-                    </PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationNext 
-                      href="#" 
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setCurrentPage(currentPage + 1);
-                      }}
-                      className="pointer-events-none opacity-50"
-                    />
-                  </PaginationItem>
-                </PaginationContent>
-              </Pagination>
-            </div>
-          )}
+              {/* Pagination */}
+              <div className="flex items-center justify-between px-6 py-4 border-t bg-gray-50">
+                <div className="text-sm text-gray-600">
+                  Showing {startIndex + 1} to {Math.min(endIndex, filteredMembers.length)} of {filteredMembers.length} results
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                    disabled={currentPage === 1}
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                    Previous
+                  </Button>
+                  <div className="flex items-center space-x-1">
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                      <Button
+                        key={page}
+                        variant={currentPage === page ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setCurrentPage(page)}
+                        className="w-8 h-8 p-0"
+                      >
+                        {page}
+                      </Button>
+                    ))}
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+                    disabled={currentPage === totalPages}
+                  >
+                    Next
+                    <ChevronRight className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>

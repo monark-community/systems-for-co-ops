@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -20,6 +19,7 @@ import {
 import { Link, useParams } from "react-router-dom";
 import { useState } from "react";
 import ConnectWalletButton from "@/components/ConnectWalletButton";
+import CoopSelector from "@/components/CoopSelector";
 
 const ProposalDetail = () => {
   const { id } = useParams();
@@ -53,7 +53,8 @@ The garden will be managed by a volunteer committee of residents and will operat
     proposer: {
       name: "Sarah Chen",
       unit: "5B",
-      avatar: "SC"
+      avatar: "SC",
+      id: "sarah-chen"
     },
     timeline: [
       { date: "2024-12-20", event: "Proposal submitted", status: "completed" },
@@ -69,7 +70,8 @@ The garden will be managed by a volunteer committee of residents and will operat
         unit: "8C",
         content: "This is a fantastic idea! I'm happy to volunteer for the maintenance committee.",
         timestamp: "2024-12-21T14:30:00Z",
-        avatar: "MR"
+        avatar: "MR",
+        memberId: "michael-rodriguez"
       },
       {
         id: 2,
@@ -77,14 +79,15 @@ The garden will be managed by a volunteer committee of residents and will operat
         unit: "15A",
         content: "I love the composting component. Will this include education about sustainable gardening practices?",
         timestamp: "2024-12-21T16:45:00Z",
-        avatar: "EJ"
+        avatar: "EJ",
+        memberId: "emily-johnson"
       }
     ],
     supporters: [
-      { name: "John Doe", unit: "12A", avatar: "JD" },
-      { name: "Michael Rodriguez", unit: "8C", avatar: "MR" },
-      { name: "Emily Johnson", unit: "15A", avatar: "EJ" },
-      { name: "David Kim", unit: "3D", avatar: "DK" }
+      { name: "John Doe", unit: "12A", avatar: "JD", id: "john-doe" },
+      { name: "Michael Rodriguez", unit: "8C", avatar: "MR", id: "michael-rodriguez" },
+      { name: "Emily Johnson", unit: "15A", avatar: "EJ", id: "emily-johnson" },
+      { name: "David Kim", unit: "3D", avatar: "DK", id: "david-kim" }
     ]
   };
 
@@ -130,7 +133,7 @@ The garden will be managed by a volunteer committee of residents and will operat
               </div>
               <div>
                 <h1 className="text-xl font-bold text-gray-900">Proposal Details</h1>
-                <p className="text-sm text-gray-600">#{proposal.id} - {proposal.category}</p>
+                <CoopSelector />
               </div>
             </div>
             <ConnectWalletButton />
@@ -165,7 +168,14 @@ The garden will be managed by a volunteer committee of residents and will operat
                   <div className="flex items-center gap-4 text-sm text-gray-600">
                     <div className="flex items-center">
                       <User className="h-4 w-4 mr-1" />
-                      Proposed by {proposal.proposer.name} (Unit {proposal.proposer.unit})
+                      Proposed by{' '}
+                      <Link 
+                        to={`/member/${proposal.proposer.id}`}
+                        className="hover:underline text-blue-600 ml-1"
+                      >
+                        {proposal.proposer.name}
+                      </Link>{' '}
+                      (Unit {proposal.proposer.unit})
                     </div>
                     <div className="flex items-center">
                       <Tag className="h-4 w-4 mr-1" />
@@ -290,7 +300,12 @@ The garden will be managed by a volunteer committee of residents and will operat
                       </AvatarFallback>
                     </Avatar>
                     <div className="text-sm">
-                      <p className="font-medium">{supporter.name}</p>
+                      <Link 
+                        to={`/member/${supporter.id}`}
+                        className="font-medium hover:underline text-blue-600"
+                      >
+                        {supporter.name}
+                      </Link>
                       <p className="text-gray-600">Unit {supporter.unit}</p>
                     </div>
                   </div>
@@ -318,7 +333,12 @@ The garden will be managed by a volunteer committee of residents and will operat
                     </Avatar>
                     <div className="flex-1">
                       <div className="flex items-center space-x-2 mb-1">
-                        <p className="font-medium text-sm">{comment.author}</p>
+                        <Link 
+                          to={`/member/${comment.memberId}`}
+                          className="font-medium text-sm hover:underline text-blue-600"
+                        >
+                          {comment.author}
+                        </Link>
                         <p className="text-xs text-gray-500">Unit {comment.unit}</p>
                         <p className="text-xs text-gray-500">•</p>
                         <p className="text-xs text-gray-500">{formatDate(comment.timestamp)}</p>
