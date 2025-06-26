@@ -341,7 +341,7 @@ const Index = () => {
                 <div className="grid grid-cols-3 gap-4">
                   <Card className="text-center bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200">
                     <CardContent className="p-4">
-                      <div className="w-8 h-8 bg-purple-200 rounded-full mx-auto mb-2 flex items-center justify-center animate-[elastic_2s_ease-in-out_infinite]">
+                      <div className="w-8 h-8 bg-purple-200 rounded-full mx-auto mb-2 flex items-center justify-center animate-bounce">
                         <span className="text-sm font-semibold text-purple-700">45</span>
                       </div>
                       <p className="text-xs text-purple-600">Active Members</p>
@@ -349,7 +349,7 @@ const Index = () => {
                   </Card>
                   <Card className="text-center bg-gradient-to-br from-green-50 to-green-100 border-green-200">
                     <CardContent className="p-4">
-                      <div className="w-8 h-8 bg-green-200 rounded-full mx-auto mb-2 flex items-center justify-center animate-[elastic_2s_ease-in-out_infinite_0.3s]">
+                      <div className="w-8 h-8 bg-green-200 rounded-full mx-auto mb-2 flex items-center justify-center animate-pulse">
                         <span className="text-sm font-semibold text-green-700">12</span>
                       </div>
                       <p className="text-xs text-green-600">Core Members</p>
@@ -357,7 +357,7 @@ const Index = () => {
                   </Card>
                   <Card className="text-center bg-gradient-to-br from-yellow-50 to-yellow-100 border-yellow-200">
                     <CardContent className="p-4">
-                      <div className="w-8 h-8 bg-yellow-200 rounded-full mx-auto mb-2 flex items-center justify-center animate-[elastic_2s_ease-in-out_infinite_0.6s]">
+                      <div className="w-8 h-8 bg-yellow-200 rounded-full mx-auto mb-2 flex items-center justify-center animate-bounce">
                         <span className="text-sm font-semibold text-yellow-700">8</span>
                       </div>
                       <p className="text-xs text-yellow-600">New Members</p>
@@ -474,12 +474,3 @@ const Index = () => {
 };
 
 export default Index;
-
-<style jsx>{`
-  @keyframes elastic {
-    0%, 100% { transform: scale(1); }
-    25% { transform: scale(1.1); }
-    50% { transform: scale(0.95); }
-    75% { transform: scale(1.05); }
-  }
-`}</style>
