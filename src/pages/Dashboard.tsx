@@ -15,6 +15,7 @@ const Dashboard = () => {
   const userAlias = "John Doe";
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [categoryFilter, setCategoryFilter] = useState("all");
   const [votes, setVotes] = useState<Record<number, 'agree' | 'deny' | null>>({});
 
   const handleVote = (proposalId: number, vote: 'agree' | 'deny') => {
@@ -157,7 +158,7 @@ const Dashboard = () => {
                 onClick={() => handleVote(proposal.id, 'agree')}
               >
                 <Check className="h-4 w-4 mr-1" />
-                Agree
+                {userVote === 'agree' ? 'Agreed' : 'Agree'}
               </Button>
               <Button 
                 size="sm" 
@@ -170,7 +171,7 @@ const Dashboard = () => {
                 onClick={() => handleVote(proposal.id, 'deny')}
               >
                 <X className="h-4 w-4 mr-1" />
-                Deny
+                {userVote === 'deny' ? 'Denied' : 'Deny'}
               </Button>
             </div>
           )}

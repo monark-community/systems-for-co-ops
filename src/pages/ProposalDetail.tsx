@@ -4,7 +4,19 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Users, ArrowLeft, Clock, Check, X, MessageSquare, User } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
+import { 
+  ArrowLeft, 
+  Clock, 
+  User, 
+  DollarSign, 
+  Users, 
+  Check, 
+  X,
+  MessageCircle,
+  Calendar,
+  Tag
+} from "lucide-react";
 import { Link, useParams } from "react-router-dom";
 import { useState } from "react";
 import ConnectWalletButton from "@/components/ConnectWalletButton";
@@ -13,41 +25,73 @@ const ProposalDetail = () => {
   const { id } = useParams();
   const [userVote, setUserVote] = useState<'agree' | 'deny' | null>(null);
 
-  // Mock proposal data - in a real app, this would be fetched based on the ID
+  const handleVote = (vote: 'agree' | 'deny') => {
+    setUserVote(userVote === vote ? null : vote);
+  };
+
+  // Mock data - in a real app, this would be fetched based on the ID
   const proposal = {
-    id: parseInt(id || '1'),
-    title: "Community Garden Equipment Purchase",
-    description: "This proposal aims to fund the purchase of new gardening tools and equipment for our community garden project. The equipment will include shovels, rakes, watering systems, and protective gear for volunteers.",
+    id: parseInt(id || "1"),
+    title: "Rooftop Garden Installation",
+    description: "Install a community rooftop garden with raised beds, irrigation system, and tool storage for all residents to enjoy. This proposal includes the purchase of soil, seeds, gardening tools, and a small storage shed. The garden will be maintained by volunteer residents and will provide fresh produce for the community.",
+    longDescription: `This comprehensive rooftop garden project will transform our unused rooftop space into a thriving community garden. The project includes:
+
+• Installation of 12 raised garden beds (4x8 feet each)
+• Automatic drip irrigation system with timer controls
+• Weather-resistant storage shed for tools and supplies
+• Composting area for organic waste
+• Seating area with benches for community gatherings
+• Safety railings and non-slip walkways
+
+The garden will be managed by a volunteer committee of residents and will operate on a seasonal basis from April through October. All residents will have access to participate in planting, maintenance, and harvesting activities.`,
     status: "active",
     votes: 24,
     totalVotes: 45,
-    amount: "$2,500",
+    amount: "$8,500",
     createdAt: "2024-12-20T10:30:00Z",
     category: "Infrastructure",
-    author: "Alice Johnson",
-    authorWallet: "0x1234567890abcdef",
-    discussion: [
+    proposer: {
+      name: "Sarah Chen",
+      unit: "5B",
+      avatar: "SC"
+    },
+    timeline: [
+      { date: "2024-12-20", event: "Proposal submitted", status: "completed" },
+      { date: "2024-12-22", event: "Board review", status: "completed" },
+      { date: "2024-12-25", event: "Community discussion period", status: "current" },
+      { date: "2025-01-05", event: "Voting deadline", status: "upcoming" },
+      { date: "2025-01-10", event: "Implementation begins", status: "upcoming" }
+    ],
+    comments: [
       {
         id: 1,
-        author: "Bob Smith",
-        wallet: "0xabcdef1234567890",
-        message: "This is a great initiative. Our current tools are getting worn out.",
-        timestamp: "2024-12-20T14:20:00Z"
+        author: "Michael Rodriguez",
+        unit: "8C",
+        content: "This is a fantastic idea! I'm happy to volunteer for the maintenance committee.",
+        timestamp: "2024-12-21T14:30:00Z",
+        avatar: "MR"
       },
       {
         id: 2,
-        author: "Carol Davis",
-        wallet: "0x9876543210fedcba",
-        message: "I suggest we also consider composting equipment in this proposal.",
-        timestamp: "2024-12-20T16:45:00Z"
+        author: "Emily Johnson",
+        unit: "15A",
+        content: "I love the composting component. Will this include education about sustainable gardening practices?",
+        timestamp: "2024-12-21T16:45:00Z",
+        avatar: "EJ"
       }
+    ],
+    supporters: [
+      { name: "John Doe", unit: "12A", avatar: "JD" },
+      { name: "Michael Rodriguez", unit: "8C", avatar: "MR" },
+      { name: "Emily Johnson", unit: "15A", avatar: "EJ" },
+      { name: "David Kim", unit: "3D", avatar: "DK" }
     ]
   };
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', {
-      month: 'short',
+      month: 'long',
       day: 'numeric',
       year: 'numeric',
       hour: '2-digit',
@@ -65,8 +109,13 @@ const ProposalDetail = () => {
     }
   };
 
-  const handleVote = (vote: 'agree' | 'deny') => {
-    setUserVote(userVote === vote ? null : vote);
+  const getTimelineStatusColor = (status: string) => {
+    switch (status) {
+      case 'completed': return 'bg-green-500';
+      case 'current': return 'bg-blue-500';
+      case 'upcoming': return 'bg-gray-300';
+      default: return 'bg-gray-300';
+    }
   };
 
   return (
@@ -81,12 +130,10 @@ const ProposalDetail = () => {
               </div>
               <div>
                 <h1 className="text-xl font-bold text-gray-900">Proposal Details</h1>
-                <p className="text-sm text-gray-600">Review and vote on this proposal</p>
+                <p className="text-sm text-gray-600">#{proposal.id} - {proposal.category}</p>
               </div>
             </div>
-            <div className="flex items-center gap-4">
-              <ConnectWalletButton />
-            </div>
+            <ConnectWalletButton />
           </div>
         </div>
       </header>
@@ -111,101 +158,172 @@ const ProposalDetail = () => {
               <div className="flex justify-between items-start mb-4">
                 <div className="flex-1">
                   <CardTitle className="text-2xl mb-2">{proposal.title}</CardTitle>
+                  <p className="text-sm text-gray-500 flex items-center mb-2">
+                    <Clock className="h-4 w-4 mr-1" />
+                    Submitted on {formatDate(proposal.createdAt)}
+                  </p>
                   <div className="flex items-center gap-4 text-sm text-gray-600">
-                    <span className="flex items-center gap-1">
-                      <Clock className="h-4 w-4" />
-                      {formatDate(proposal.createdAt)}
-                    </span>
-                    <span>Category: {proposal.category}</span>
-                    <span>Amount: {proposal.amount}</span>
+                    <div className="flex items-center">
+                      <User className="h-4 w-4 mr-1" />
+                      Proposed by {proposal.proposer.name} (Unit {proposal.proposer.unit})
+                    </div>
+                    <div className="flex items-center">
+                      <Tag className="h-4 w-4 mr-1" />
+                      {proposal.category}
+                    </div>
+                    {proposal.amount && (
+                      <div className="flex items-center">
+                        <DollarSign className="h-4 w-4 mr-1" />
+                        {proposal.amount}
+                      </div>
+                    )}
                   </div>
                 </div>
                 <Badge className={getBadgeClass(proposal.status)}>
-                  {proposal.status}
+                  {proposal.status.charAt(0).toUpperCase() + proposal.status.slice(1)}
                 </Badge>
               </div>
-              
-              <div className="flex items-center gap-3 mb-4">
-                <Avatar className="h-8 w-8">
-                  <AvatarFallback className="text-sm bg-gradient-to-br from-purple-600 to-pink-600 text-white">
-                    {proposal.author.split(' ').map(n => n[0]).join('')}
-                  </AvatarFallback>
-                </Avatar>
-                <div>
-                  <p className="text-sm font-medium">{proposal.author}</p>
-                  <p className="text-xs text-gray-600">{proposal.authorWallet.slice(0, 12)}...</p>
-                </div>
-              </div>
+              <CardDescription className="text-base leading-relaxed">
+                {proposal.description}
+              </CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-gray-700 mb-6">{proposal.description}</p>
-              
-              {/* Voting Progress */}
-              <div className="mb-6">
-                <div className="flex justify-between text-sm mb-2">
-                  <span>Current Votes: {proposal.votes} / {proposal.totalVotes}</span>
-                  <span>{Math.round((proposal.votes / proposal.totalVotes) * 100)}% participation</span>
+              <div className="space-y-6">
+                {/* Voting Section */}
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center">
+                    <h3 className="font-semibold">Current Voting Status</h3>
+                    <span className="text-sm text-gray-600">
+                      {proposal.votes} of {proposal.totalVotes} votes cast
+                    </span>
+                  </div>
+                  <Progress value={(proposal.votes / proposal.totalVotes) * 100} className="h-3" />
+                  
+                  {proposal.status === 'active' && (
+                    <div className="flex gap-3 pt-2">
+                      <Button 
+                        className={`flex-1 ${
+                          userVote === 'agree' 
+                            ? 'bg-green-100 text-green-800 hover:bg-green-200 border-green-300' 
+                            : 'border'
+                        }`}
+                        variant="outline"
+                        onClick={() => handleVote('agree')}
+                      >
+                        <Check className="h-4 w-4 mr-2" />
+                        {userVote === 'agree' ? 'Agreed' : 'Agree'}
+                      </Button>
+                      <Button 
+                        className={`flex-1 ${
+                          userVote === 'deny' 
+                            ? 'bg-red-100 text-red-800 hover:bg-red-200 border-red-300' 
+                            : 'border'
+                        }`}
+                        variant="outline"
+                        onClick={() => handleVote('deny')}
+                      >
+                        <X className="h-4 w-4 mr-2" />
+                        {userVote === 'deny' ? 'Denied' : 'Deny'}
+                      </Button>
+                    </div>
+                  )}
                 </div>
-                <Progress value={(proposal.votes / proposal.totalVotes) * 100} className="h-3" />
-              </div>
 
-              {/* Voting Buttons */}
-              {proposal.status === 'active' && (
-                <div className="flex gap-4">
-                  <Button 
-                    className={`flex-1 ${
-                      userVote === 'agree' 
-                        ? 'bg-green-100 text-green-800 hover:bg-green-200 border-green-300' 
-                        : ''
-                    }`}
-                    variant={userVote === 'agree' ? 'outline' : 'default'}
-                    onClick={() => handleVote('agree')}
-                  >
-                    {userVote === 'agree' && <Check className="h-4 w-4 mr-2" />}
-                    Agree
-                  </Button>
-                  <Button 
-                    className={`flex-1 ${
-                      userVote === 'deny' 
-                        ? 'bg-red-100 text-red-800 hover:bg-red-200 border-red-300' 
-                        : ''
-                    }`}
-                    variant="outline"
-                    onClick={() => handleVote('deny')}
-                  >
-                    {userVote === 'deny' && <X className="h-4 w-4 mr-2" />}
-                    Deny
-                  </Button>
+                <Separator />
+
+                {/* Detailed Description */}
+                <div className="space-y-4">
+                  <h3 className="font-semibold">Detailed Description</h3>
+                  <div className="prose prose-sm max-w-none">
+                    {proposal.longDescription.split('\n').map((paragraph, index) => (
+                      <p key={index} className="mb-3 text-gray-700 leading-relaxed">
+                        {paragraph}
+                      </p>
+                    ))}
+                  </div>
                 </div>
-              )}
+              </div>
             </CardContent>
           </Card>
 
-          {/* Discussion */}
+          {/* Timeline */}
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <MessageSquare className="h-5 w-5" />
-                Discussion ({proposal.discussion.length})
+              <CardTitle className="flex items-center">
+                <Calendar className="h-5 w-5 mr-2" />
+                Project Timeline
               </CardTitle>
-              <CardDescription>Community comments and feedback</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {proposal.discussion.map((comment) => (
-                  <div key={comment.id} className="flex gap-3 p-4 bg-gray-50 rounded-lg">
+                {proposal.timeline.map((item, index) => (
+                  <div key={index} className="flex items-start space-x-4">
+                    <div className={`w-3 h-3 rounded-full mt-1.5 ${getTimelineStatusColor(item.status)}`} />
+                    <div className="flex-1">
+                      <p className="font-medium">{item.event}</p>
+                      <p className="text-sm text-gray-600">{new Date(item.date).toLocaleDateString()}</p>
+                    </div>
+                    <Badge variant="outline" className="text-xs">
+                      {item.status}
+                    </Badge>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Supporters */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <Users className="h-5 w-5 mr-2" />
+                Current Supporters ({proposal.supporters.length})
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-wrap gap-4">
+                {proposal.supporters.map((supporter, index) => (
+                  <div key={index} className="flex items-center space-x-2">
                     <Avatar className="h-8 w-8">
-                      <AvatarFallback className="text-sm">
-                        {comment.author.split(' ').map(n => n[0]).join('')}
+                      <AvatarFallback className="bg-gradient-to-br from-blue-600 to-green-600 text-white text-xs">
+                        {supporter.avatar}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="text-sm">
+                      <p className="font-medium">{supporter.name}</p>
+                      <p className="text-gray-600">Unit {supporter.unit}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Comments */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <MessageCircle className="h-5 w-5 mr-2" />
+                Community Discussion ({proposal.comments.length})
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-6">
+                {proposal.comments.map((comment) => (
+                  <div key={comment.id} className="flex space-x-4">
+                    <Avatar className="h-10 w-10">
+                      <AvatarFallback className="bg-gradient-to-br from-blue-600 to-green-600 text-white">
+                        {comment.avatar}
                       </AvatarFallback>
                     </Avatar>
                     <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="font-medium text-sm">{comment.author}</span>
-                        <span className="text-xs text-gray-500">{comment.wallet.slice(0, 8)}...</span>
-                        <span className="text-xs text-gray-500">{formatDate(comment.timestamp)}</span>
+                      <div className="flex items-center space-x-2 mb-1">
+                        <p className="font-medium text-sm">{comment.author}</p>
+                        <p className="text-xs text-gray-500">Unit {comment.unit}</p>
+                        <p className="text-xs text-gray-500">•</p>
+                        <p className="text-xs text-gray-500">{formatDate(comment.timestamp)}</p>
                       </div>
-                      <p className="text-sm text-gray-700">{comment.message}</p>
+                      <p className="text-sm text-gray-700">{comment.content}</p>
                     </div>
                   </div>
                 ))}
