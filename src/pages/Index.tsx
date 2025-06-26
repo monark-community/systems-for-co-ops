@@ -18,8 +18,8 @@ const Index = () => {
 
   useEffect(() => {
     const observerOptions = {
-      threshold: 0.3,
-      rootMargin: '0px 0px -50px 0px'
+      threshold: 0.5, // Increased from 0.3 to 0.5 (50% visible before triggering)
+      rootMargin: '0px 0px -100px 0px' // Increased bottom margin from -50px to -100px
     };
 
     const handleTreasuryIntersection = (entries: IntersectionObserverEntry[]) => {
