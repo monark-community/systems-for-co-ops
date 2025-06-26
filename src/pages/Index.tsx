@@ -6,6 +6,7 @@ import { Progress } from "@/components/ui/progress";
 import { Users, Vote, Wallet, Shield, FileText, TrendingUp, DollarSign, Calendar } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useEffect, useState, useRef } from "react";
+import ConnectWalletButton from "@/components/ConnectWalletButton";
 
 const Index = () => {
   const [progressValue, setProgressValue] = useState(0);
@@ -124,9 +125,7 @@ const Index = () => {
               </div>
             </div>
             <div className="flex items-center space-x-4">
-              <Button variant="outline" asChild>
-                <Link to="/dashboard">Dashboard</Link>
-              </Button>
+              <ConnectWalletButton />
               <Button asChild>
                 <Link to="/join">Join Cooperative</Link>
               </Button>
@@ -316,7 +315,7 @@ const Index = () => {
                           <span>Votes: 24 / 45 members</span>
                           <span>Time left: 3 days</span>
                         </div>
-                        <Progress value={progressValue} className="h-2 transition-all duration-1500 ease-out" />
+                        <Progress value={progressValue} className="h-2 transition-all duration-2250 ease-out" />
                       </div>
                       <div className="flex gap-2 pt-2">
                         <Button size="sm" className="flex-1 bg-blue-600 hover:bg-blue-700">Vote Yes</Button>
@@ -386,15 +385,7 @@ const Index = () => {
                 <div className="grid grid-cols-3 gap-4">
                   <Card className="text-center bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200">
                     <CardContent className="p-4">
-                      <div className={`w-8 h-8 bg-purple-200 rounded-full mx-auto mb-2 flex items-center justify-center ${showMemberBadges ? 'animate-[scale_1.5s_ease-in-out_infinite]' : ''}`} style={{
-                        animationKeyframes: showMemberBadges ? `
-                          @keyframes scale {
-                            0%, 100% { transform: scale(1); }
-                            25% { transform: scale(1.1); }
-                            75% { transform: scale(0.95); }
-                          }
-                        ` : undefined
-                      }}>
+                      <div className={`w-8 h-8 bg-purple-200 rounded-full mx-auto mb-2 flex items-center justify-center ${showMemberBadges ? 'animate-[scale_1.5s_ease-in-out]' : ''}`}>
                         <span className="text-sm font-semibold text-purple-700">45</span>
                       </div>
                       <p className="text-xs text-purple-600">Active Members</p>
@@ -402,15 +393,7 @@ const Index = () => {
                   </Card>
                   <Card className="text-center bg-gradient-to-br from-green-50 to-green-100 border-green-200">
                     <CardContent className="p-4">
-                      <div className={`w-8 h-8 bg-green-200 rounded-full mx-auto mb-2 flex items-center justify-center ${showMemberBadges ? 'animate-[scale_1.5s_ease-in-out_infinite]' : ''}`} style={{
-                        animationKeyframes: showMemberBadges ? `
-                          @keyframes scale {
-                            0%, 100% { transform: scale(1); }
-                            25% { transform: scale(1.1); }
-                            75% { transform: scale(0.95); }
-                          }
-                        ` : undefined
-                      }}>
+                      <div className={`w-8 h-8 bg-green-200 rounded-full mx-auto mb-2 flex items-center justify-center ${showMemberBadges ? 'animate-[scale_1.5s_ease-in-out]' : ''}`}>
                         <span className="text-sm font-semibold text-green-700">12</span>
                       </div>
                       <p className="text-xs text-green-600">Core Members</p>
@@ -418,15 +401,7 @@ const Index = () => {
                   </Card>
                   <Card className="text-center bg-gradient-to-br from-yellow-50 to-yellow-100 border-yellow-200">
                     <CardContent className="p-4">
-                      <div className={`w-8 h-8 bg-yellow-200 rounded-full mx-auto mb-2 flex items-center justify-center ${showMemberBadges ? 'animate-[scale_1.5s_ease-in-out_infinite]' : ''}`} style={{
-                        animationKeyframes: showMemberBadges ? `
-                          @keyframes scale {
-                            0%, 100% { transform: scale(1); }
-                            25% { transform: scale(1.1); }
-                            75% { transform: scale(0.95); }
-                          }
-                        ` : undefined
-                      }}>
+                      <div className={`w-8 h-8 bg-yellow-200 rounded-full mx-auto mb-2 flex items-center justify-center ${showMemberBadges ? 'animate-[scale_1.5s_ease-in-out]' : ''}`}>
                         <span className="text-sm font-semibold text-yellow-700">8</span>
                       </div>
                       <p className="text-xs text-yellow-600">New Members</p>
