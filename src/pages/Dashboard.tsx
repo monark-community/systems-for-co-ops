@@ -1,35 +1,174 @@
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Users, Vote, Wallet, Plus, FileText, Clock } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Users, Vote, Wallet, Plus, FileText, Clock, ChevronRight, Check, X, Search } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
 import ConnectWalletButton from "@/components/ConnectWalletButton";
 
 const Dashboard = () => {
-  const userRole = "Member"; // This would come from authentication context
-  const userAlias = "John Doe"; // This should match the wallet button
-  
-  const myProposals = [
+  const navigate = useNavigate();
+  const userAlias = "John Doe";
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [votes, setVotes] = useState<Record<number, 'agree' | 'deny' | null>>({});
+
+  const handleVote = (proposalId: number, vote: 'agree' | 'deny') => {
+    setVotes(prev => ({
+      ...prev,
+      [proposalId]: prev[proposalId] === vote ? null : vote
+    }));
+  };
+
+  const activeProposals = [
     {
       id: 1,
+      title: "Community Garden Equipment Purchase",
+      description: "Funding for new gardening tools and equipment for our community garden project",
+      status: "active",
+      votes: 24,
+      totalVotes: 45,
+      amount: "$2,500",
+      createdAt: "2024-12-20T10:30:00Z",
+      category: "Infrastructure"
+    },
+    {
+      id: 2,
+      title: "Monthly Food Distribution Coordinator",
+      description: "Hire part-time coordinator for our monthly food distribution program",
+      status: "active",
+      votes: 18,
+      totalVotes: 45,
+      amount: "$1,800/month",
+      createdAt: "2024-12-19T14:15:00Z",
+      category: "Personnel"
+    }
+  ];
+
+  const myProposals = [
+    {
+      id: 3,
       title: "Equipment Maintenance Fund",
       status: "active",
       votes: 12,
       totalVotes: 45,
-      createdAt: "2 days ago"
+      createdAt: "2024-12-18T09:00:00Z",
+      category: "Maintenance"
     },
     {
-      id: 2,
+      id: 4,
       title: "Community Event Sponsorship",
       status: "passed",
       votes: 38,
       totalVotes: 45,
-      createdAt: "1 week ago"
+      createdAt: "2024-12-15T16:45:00Z",
+      category: "Events"
     }
   ];
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
+  const getBadgeVariant = (status: string) => {
+    switch (status) {
+      case 'active': return 'default';
+      case 'passed': return 'secondary';
+      case 'denied': return 'destructive';
+      case 'abandoned': return 'outline';
+      default: return 'default';
+    }
+  };
+
+  const getBadgeClass = (status: string) => {
+    switch (status) {
+      case 'active': return 'bg-black text-white border-black';
+      case 'passed': return 'bg-green-100 text-green-800 border-green-300';
+      case 'denied': return 'bg-red-100 text-red-800 border-red-300';
+      case 'abandoned': return 'bg-gray-100 text-gray-600 border-gray-300';
+      default: return '';
+    }
+  };
+
+  const ProposalCard = ({ proposal, showVoting = false }: { proposal: any, showVoting?: boolean }) => {
+    const userVote = votes[proposal.id];
+    
+    return (
+      <div className="border rounded-lg p-4">
+        <div className="flex justify-between items-start mb-3">
+          <div className="flex-1">
+            <Link 
+              to={`/proposal/${proposal.id}`}
+              className="hover:underline"
+            >
+              <h4 className="font-semibold flex items-center gap-1">
+                {proposal.title}
+                <ChevronRight className="h-4 w-4" />
+              </h4>
+            </Link>
+            {proposal.description && (
+              <p className="text-sm text-gray-600 mt-1">{proposal.description}</p>
+            )}
+            <p className="text-xs text-gray-500 mt-2">
+              <Clock className="h-3 w-3 inline mr-1" />
+              {formatDate(proposal.createdAt)}
+            </p>
+          </div>
+          <Badge className={getBadgeClass(proposal.status)}>
+            {proposal.status}
+          </Badge>
+        </div>
+        <div className="space-y-2">
+          <div className="flex justify-between text-sm">
+            <span>Votes: {proposal.votes} / {proposal.totalVotes}</span>
+            {proposal.amount && <span>Amount: {proposal.amount}</span>}
+          </div>
+          <Progress value={(proposal.votes / proposal.totalVotes) * 100} className="h-2" />
+          {showVoting && (
+            <div className="flex gap-2 pt-2">
+              <Button 
+                size="sm" 
+                className={`flex-1 ${
+                  userVote === 'agree' 
+                    ? 'bg-green-100 text-green-800 hover:bg-green-200' 
+                    : ''
+                }`}
+                variant={userVote === 'agree' ? 'outline' : 'default'}
+                onClick={() => handleVote(proposal.id, 'agree')}
+              >
+                {userVote === 'agree' && <Check className="h-4 w-4 mr-1" />}
+                Agree
+              </Button>
+              <Button 
+                size="sm" 
+                className={`flex-1 ${
+                  userVote === 'deny' 
+                    ? 'bg-red-100 text-red-800 hover:bg-red-200' 
+                    : ''
+                }`}
+                variant={userVote === 'deny' ? 'outline' : 'outline'}
+                onClick={() => handleVote(proposal.id, 'deny')}
+              >
+                {userVote === 'deny' && <X className="h-4 w-4 mr-1" />}
+                Deny
+              </Button>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  };
 
   const recentActivity = [
     {
@@ -77,15 +216,13 @@ const Dashboard = () => {
                 <p className="text-sm text-gray-600">Welcome back, {userAlias}</p>
               </div>
             </div>
-            <div className="flex items-center justify-center flex-1">
+            <div className="flex items-center gap-4">
               <Button asChild>
                 <Link to="/proposal/new">
                   <Plus className="h-4 w-4 mr-2" />
                   New Proposal
                 </Link>
               </Button>
-            </div>
-            <div className="flex items-center">
               <ConnectWalletButton />
             </div>
           </div>
@@ -140,6 +277,31 @@ const Dashboard = () => {
           </Card>
         </div>
 
+        {/* Search and Filter */}
+        <div className="flex gap-4 mb-6">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+            <Input
+              placeholder="Search proposals..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10"
+            />
+          </div>
+          <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <SelectTrigger className="w-48">
+              <SelectValue placeholder="Filter by status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Status</SelectItem>
+              <SelectItem value="active">Active</SelectItem>
+              <SelectItem value="passed">Passed</SelectItem>
+              <SelectItem value="denied">Denied</SelectItem>
+              <SelectItem value="abandoned">Abandoned</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
         {/* Main Content Tabs */}
         <Tabs defaultValue="proposals" className="space-y-6">
           <TabsList className="grid w-full grid-cols-4">
@@ -156,51 +318,9 @@ const Dashboard = () => {
                 <CardDescription>Review and vote on active cooperative proposals</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="border rounded-lg p-4">
-                  <div className="flex justify-between items-start mb-3">
-                    <div>
-                      <h4 className="font-semibold">Community Garden Equipment Purchase</h4>
-                      <p className="text-sm text-gray-600 mt-1">
-                        Funding for new gardening tools and equipment for our community garden project
-                      </p>
-                    </div>
-                    <Badge>Active</Badge>
-                  </div>
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span>Votes: 24 / 45</span>
-                      <span>Amount: $2,500</span>
-                    </div>
-                    <Progress value={53} className="h-2" />
-                    <div className="flex gap-2 pt-2">
-                      <Button size="sm" className="flex-1">Vote Yes</Button>
-                      <Button size="sm" variant="outline" className="flex-1">Vote No</Button>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="border rounded-lg p-4">
-                  <div className="flex justify-between items-start mb-3">
-                    <div>
-                      <h4 className="font-semibold">Monthly Food Distribution Coordinator</h4>
-                      <p className="text-sm text-gray-600 mt-1">
-                        Hire part-time coordinator for our monthly food distribution program
-                      </p>
-                    </div>
-                    <Badge>Active</Badge>
-                  </div>
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span>Votes: 18 / 45</span>
-                      <span>Amount: $1,800/month</span>
-                    </div>
-                    <Progress value={40} className="h-2" />
-                    <div className="flex gap-2 pt-2">
-                      <Button size="sm" className="flex-1">Vote Yes</Button>
-                      <Button size="sm" variant="outline" className="flex-1">Vote No</Button>
-                    </div>
-                  </div>
-                </div>
+                {activeProposals.map((proposal) => (
+                  <ProposalCard key={proposal.id} proposal={proposal} showVoting={true} />
+                ))}
               </CardContent>
             </Card>
           </TabsContent>
@@ -213,24 +333,7 @@ const Dashboard = () => {
               </CardHeader>
               <CardContent className="space-y-4">
                 {myProposals.map((proposal) => (
-                  <div key={proposal.id} className="border rounded-lg p-4">
-                    <div className="flex justify-between items-start mb-3">
-                      <div>
-                        <h4 className="font-semibold">{proposal.title}</h4>
-                        <p className="text-sm text-gray-600 mt-1">Created {proposal.createdAt}</p>
-                      </div>
-                      <Badge variant={proposal.status === 'passed' ? 'default' : 'secondary'}>
-                        {proposal.status}
-                      </Badge>
-                    </div>
-                    <div className="space-y-2">
-                      <div className="flex justify-between text-sm">
-                        <span>Votes: {proposal.votes} / {proposal.totalVotes}</span>
-                        <span>{Math.round((proposal.votes / proposal.totalVotes) * 100)}% approval</span>
-                      </div>
-                      <Progress value={(proposal.votes / proposal.totalVotes) * 100} className="h-2" />
-                    </div>
-                  </div>
+                  <ProposalCard key={proposal.id} proposal={proposal} />
                 ))}
               </CardContent>
             </Card>

@@ -15,12 +15,11 @@ const ConnectWalletButton = () => {
   const location = useLocation();
   const isDashboard = location.pathname === "/dashboard" || location.pathname === "/profile";
   const [isConnected, setIsConnected] = useState(isDashboard);
-  const [userAlias] = useState("John Doe"); // This would come from wallet connection
-  const [walletAddress] = useState("0x742d35Cc6634C0532925a3b8D5c"); // This would come from wallet connection
+  const [userAlias] = useState("John Doe");
+  const [walletAddress] = useState("0x742d35Cc6634C0532925a3b8D5c");
   const navigate = useNavigate();
 
   const handleConnect = () => {
-    // In a real app, this would trigger wallet connection
     setIsConnected(true);
     navigate("/dashboard");
   };
@@ -46,7 +45,7 @@ const ConnectWalletButton = () => {
             </Avatar>
             <div className="text-left">
               <div className="text-sm font-medium leading-tight">{userAlias}</div>
-              <div className="text-xs text-muted-foreground leading-tight">{walletAddress.slice(0, 8)}...</div>
+              <div className="text-xs text-muted-foreground leading-tight">{walletAddress.slice(0, 10)}</div>
             </div>
           </Button>
         </DropdownMenuTrigger>
