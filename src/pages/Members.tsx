@@ -1,16 +1,25 @@
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Users, ArrowLeft, Search, User } from "lucide-react";
+import { Users, ArrowLeft, Search, User, ChevronLeft, ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import ConnectWalletButton from "@/components/ConnectWalletButton";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 
 const Members = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
   
   const members = [
     {
@@ -131,6 +140,9 @@ const Members = () => {
     }
   };
 
+  const totalResults = filteredMembers.length;
+  const resultsText = `Showing ${totalResults} member${totalResults !== 1 ? 's' : ''}`;
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50">
       {/* Header */}
@@ -166,7 +178,7 @@ const Members = () => {
       </div>
 
       <div className="container mx-auto px-4 py-8">
-        <div className="max-w-6xl mx-auto space-y-8">
+        <div className="max-w-6xl mx-auto space-y-6">
           {/* Search */}
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
@@ -178,38 +190,49 @@ const Members = () => {
             />
           </div>
 
-          {/* Members Grid */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {/* Table Headers */}
+          <div className="grid grid-cols-12 gap-4 px-6 py-3 text-sm font-medium text-gray-600 bg-gray-50 rounded-lg">
+            <div className="col-span-4">Member</div>
+            <div className="col-span-3">Role</div>
+            <div className="col-span-2">Voting Power</div>
+            <div className="col-span-3">Member Since</div>
+          </div>
+
+          {/* Members List */}
+          <div className="space-y-2">
             {filteredMembers.map((member) => (
               <Card key={member.id} className="hover:shadow-md transition-shadow cursor-pointer">
-                <CardHeader className="pb-4">
-                  <div className="flex items-center space-x-4">
-                    <Avatar className="h-12 w-12">
-                      <AvatarFallback className="bg-gradient-to-br from-blue-600 to-green-600 text-white">
-                        {member.alias}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="flex-1">
-                      <CardTitle className="text-lg">{member.name}</CardTitle>
-                      <CardDescription>Unit {member.unitNumber}</CardDescription>
+                <CardContent className="p-6">
+                  <div className="grid grid-cols-12 gap-4 items-center">
+                    {/* Member Info */}
+                    <div className="col-span-4 flex items-center space-x-4">
+                      <Avatar className="h-12 w-12">
+                        <AvatarFallback className="bg-gradient-to-br from-blue-600 to-green-600 text-white">
+                          {member.alias}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <div className="font-medium text-gray-900">{member.name}</div>
+                        <div className="text-sm text-gray-600">Unit {member.unitNumber}</div>
+                      </div>
                     </div>
-                  </div>
-                  <Badge className={getRoleBadgeClass(member.role)}>
-                    {member.role}
-                  </Badge>
-                </CardHeader>
-                <CardContent className="space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Voting Power:</span>
-                    <span className="font-medium">{member.votingPower}</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Unit Value:</span>
-                    <span className="font-medium">{member.unitValue}</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Member Since:</span>
-                    <span className="font-medium">{member.joinedDate}</span>
+                    
+                    {/* Role Badge */}
+                    <div className="col-span-3">
+                      <Badge className={`${getRoleBadgeClass(member.role)} w-fit`}>
+                        {member.role}
+                      </Badge>
+                    </div>
+                    
+                    {/* Voting Power */}
+                    <div className="col-span-2 font-medium text-gray-900">
+                      {member.votingPower}
+                    </div>
+                    
+                    {/* Member Since */}
+                    <div className="col-span-3 text-gray-600">
+                      {member.joinedDate}
+                    </div>
                   </div>
                 </CardContent>
               </Card>
@@ -220,6 +243,43 @@ const Members = () => {
             <div className="text-center py-8">
               <User className="h-12 w-12 text-gray-400 mx-auto mb-4" />
               <p className="text-gray-600">No members found matching your search.</p>
+            </div>
+          )}
+
+          {/* Pagination */}
+          {filteredMembers.length > 0 && (
+            <div className="flex items-center justify-between">
+              <p className="text-sm text-gray-600">{resultsText}</p>
+              
+              <Pagination>
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious 
+                      href="#" 
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setCurrentPage(Math.max(1, currentPage - 1));
+                      }}
+                      className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
+                    />
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationLink href="#" isActive>
+                      1
+                    </PaginationLink>
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationNext 
+                      href="#" 
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setCurrentPage(currentPage + 1);
+                      }}
+                      className="pointer-events-none opacity-50"
+                    />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
             </div>
           )}
         </div>
