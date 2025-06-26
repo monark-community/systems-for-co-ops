@@ -4,29 +4,73 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Users, Vote, Wallet, Shield, FileText, TrendingUp, DollarSign, Calendar } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 const Index = () => {
   const [progressValue, setProgressValue] = useState(0);
   const [showCards, setShowCards] = useState([false, false, false, false]);
+  const [showMemberBadges, setShowMemberBadges] = useState(false);
+
+  // Refs for scroll-triggered animations
+  const treasuryRef = useRef<HTMLDivElement>(null);
+  const proposalRef = useRef<HTMLDivElement>(null);
+  const memberRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Animate progress bar
-    const timer = setTimeout(() => {
-      setProgressValue(53);
-    }, 500);
+    const observerOptions = {
+      threshold: 0.3,
+      rootMargin: '0px 0px -50px 0px'
+    };
 
-    // Animate treasury cards one by one
-    const cardTimers = [
-      setTimeout(() => setShowCards(prev => [true, ...prev.slice(1)]), 300),
-      setTimeout(() => setShowCards(prev => [prev[0], true, ...prev.slice(2)]), 600),
-      setTimeout(() => setShowCards(prev => [...prev.slice(0, 2), true, prev[3]]), 900),
-      setTimeout(() => setShowCards(prev => [...prev.slice(0, 3), true]), 1200),
-    ];
+    const handleTreasuryIntersection = (entries: IntersectionObserverEntry[]) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          // Animate treasury cards one by one
+          const cardTimers = [
+            setTimeout(() => setShowCards(prev => [true, ...prev.slice(1)]), 300),
+            setTimeout(() => setShowCards(prev => [prev[0], true, ...prev.slice(2)]), 600),
+            setTimeout(() => setShowCards(prev => [...prev.slice(0, 2), true, prev[3]]), 900),
+            setTimeout(() => setShowCards(prev => [...prev.slice(0, 3), true]), 1200),
+          ];
+          
+          return () => cardTimers.forEach(clearTimeout);
+        }
+      });
+    };
+
+    const handleProposalIntersection = (entries: IntersectionObserverEntry[]) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          // Animate progress bar
+          const timer = setTimeout(() => {
+            setProgressValue(53);
+          }, 500);
+          
+          return () => clearTimeout(timer);
+        }
+      });
+    };
+
+    const handleMemberIntersection = (entries: IntersectionObserverEntry[]) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          setShowMemberBadges(true);
+        }
+      });
+    };
+
+    const treasuryObserver = new IntersectionObserver(handleTreasuryIntersection, observerOptions);
+    const proposalObserver = new IntersectionObserver(handleProposalIntersection, observerOptions);
+    const memberObserver = new IntersectionObserver(handleMemberIntersection, observerOptions);
+
+    if (treasuryRef.current) treasuryObserver.observe(treasuryRef.current);
+    if (proposalRef.current) proposalObserver.observe(proposalRef.current);
+    if (memberRef.current) memberObserver.observe(memberRef.current);
 
     return () => {
-      clearTimeout(timer);
-      cardTimers.forEach(clearTimeout);
+      treasuryObserver.disconnect();
+      proposalObserver.disconnect();
+      memberObserver.disconnect();
     };
   }, []);
 
@@ -176,9 +220,9 @@ const Index = () => {
             </p>
           </div>
 
-          <div className="space-y-24">
+          <div className="space-y-32">
             {/* Treasury Management Demo */}
-            <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div ref={treasuryRef} className="grid lg:grid-cols-2 gap-12 items-center">
               <div className="space-y-6">
                 <div className="flex items-center space-x-3">
                   <div className="h-12 w-12 bg-green-100 rounded-lg flex items-center justify-center">
@@ -246,7 +290,7 @@ const Index = () => {
             </div>
 
             {/* Proposal Voting Demo */}
-            <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div ref={proposalRef} className="grid lg:grid-cols-2 gap-12 items-center">
               <div className="order-2 lg:order-1">
                 <Card className="bg-gradient-to-br from-blue-50 to-indigo-100 border-blue-200">
                   <CardHeader>
@@ -310,7 +354,7 @@ const Index = () => {
             </div>
 
             {/* Member Management Demo */}
-            <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div ref={memberRef} className="grid lg:grid-cols-2 gap-12 items-center">
               <div className="space-y-6">
                 <div className="flex items-center space-x-3">
                   <div className="h-12 w-12 bg-purple-100 rounded-lg flex items-center justify-center">
@@ -341,7 +385,7 @@ const Index = () => {
                 <div className="grid grid-cols-3 gap-4">
                   <Card className="text-center bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200">
                     <CardContent className="p-4">
-                      <div className="w-8 h-8 bg-purple-200 rounded-full mx-auto mb-2 flex items-center justify-center animate-bounce">
+                      <div className={`w-8 h-8 bg-purple-200 rounded-full mx-auto mb-2 flex items-center justify-center ${showMemberBadges ? 'animate-bounce' : ''}`}>
                         <span className="text-sm font-semibold text-purple-700">45</span>
                       </div>
                       <p className="text-xs text-purple-600">Active Members</p>
@@ -349,7 +393,7 @@ const Index = () => {
                   </Card>
                   <Card className="text-center bg-gradient-to-br from-green-50 to-green-100 border-green-200">
                     <CardContent className="p-4">
-                      <div className="w-8 h-8 bg-green-200 rounded-full mx-auto mb-2 flex items-center justify-center animate-pulse">
+                      <div className={`w-8 h-8 bg-green-200 rounded-full mx-auto mb-2 flex items-center justify-center ${showMemberBadges ? 'animate-pulse' : ''}`}>
                         <span className="text-sm font-semibold text-green-700">12</span>
                       </div>
                       <p className="text-xs text-green-600">Core Members</p>
@@ -357,7 +401,7 @@ const Index = () => {
                   </Card>
                   <Card className="text-center bg-gradient-to-br from-yellow-50 to-yellow-100 border-yellow-200">
                     <CardContent className="p-4">
-                      <div className="w-8 h-8 bg-yellow-200 rounded-full mx-auto mb-2 flex items-center justify-center animate-bounce">
+                      <div className={`w-8 h-8 bg-yellow-200 rounded-full mx-auto mb-2 flex items-center justify-center ${showMemberBadges ? 'animate-bounce' : ''}`}>
                         <span className="text-sm font-semibold text-yellow-700">8</span>
                       </div>
                       <p className="text-xs text-yellow-600">New Members</p>
