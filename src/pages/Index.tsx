@@ -125,10 +125,10 @@ const Index = () => {
               </div>
             </div>
             <div className="flex items-center space-x-4">
-              <ConnectWalletButton />
               <Button asChild>
                 <Link to="/join">Join Cooperative</Link>
               </Button>
+              <ConnectWalletButton />
             </div>
           </div>
         </div>
