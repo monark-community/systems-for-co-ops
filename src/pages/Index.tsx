@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -41,10 +42,10 @@ const Index = () => {
     const handleProposalIntersection = (entries: IntersectionObserverEntry[]) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          // Animate progress bar
+          // Animate progress bar - slowed down by 50%
           const timer = setTimeout(() => {
             setProgressValue(53);
-          }, 500);
+          }, 750); // Increased from 500ms to 750ms
           
           return () => clearTimeout(timer);
         }
@@ -315,7 +316,7 @@ const Index = () => {
                           <span>Votes: 24 / 45 members</span>
                           <span>Time left: 3 days</span>
                         </div>
-                        <Progress value={progressValue} className="h-2 transition-all duration-1000 ease-out" />
+                        <Progress value={progressValue} className="h-2 transition-all duration-1500 ease-out" />
                       </div>
                       <div className="flex gap-2 pt-2">
                         <Button size="sm" className="flex-1 bg-blue-600 hover:bg-blue-700">Vote Yes</Button>
@@ -385,7 +386,15 @@ const Index = () => {
                 <div className="grid grid-cols-3 gap-4">
                   <Card className="text-center bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200">
                     <CardContent className="p-4">
-                      <div className={`w-8 h-8 bg-purple-200 rounded-full mx-auto mb-2 flex items-center justify-center ${showMemberBadges ? 'animate-bounce' : ''}`}>
+                      <div className={`w-8 h-8 bg-purple-200 rounded-full mx-auto mb-2 flex items-center justify-center ${showMemberBadges ? 'animate-[scale_1.5s_ease-in-out_infinite]' : ''}`} style={{
+                        animationKeyframes: showMemberBadges ? `
+                          @keyframes scale {
+                            0%, 100% { transform: scale(1); }
+                            25% { transform: scale(1.1); }
+                            75% { transform: scale(0.95); }
+                          }
+                        ` : undefined
+                      }}>
                         <span className="text-sm font-semibold text-purple-700">45</span>
                       </div>
                       <p className="text-xs text-purple-600">Active Members</p>
@@ -393,7 +402,15 @@ const Index = () => {
                   </Card>
                   <Card className="text-center bg-gradient-to-br from-green-50 to-green-100 border-green-200">
                     <CardContent className="p-4">
-                      <div className={`w-8 h-8 bg-green-200 rounded-full mx-auto mb-2 flex items-center justify-center ${showMemberBadges ? 'animate-pulse' : ''}`}>
+                      <div className={`w-8 h-8 bg-green-200 rounded-full mx-auto mb-2 flex items-center justify-center ${showMemberBadges ? 'animate-[scale_1.5s_ease-in-out_infinite]' : ''}`} style={{
+                        animationKeyframes: showMemberBadges ? `
+                          @keyframes scale {
+                            0%, 100% { transform: scale(1); }
+                            25% { transform: scale(1.1); }
+                            75% { transform: scale(0.95); }
+                          }
+                        ` : undefined
+                      }}>
                         <span className="text-sm font-semibold text-green-700">12</span>
                       </div>
                       <p className="text-xs text-green-600">Core Members</p>
@@ -401,7 +418,15 @@ const Index = () => {
                   </Card>
                   <Card className="text-center bg-gradient-to-br from-yellow-50 to-yellow-100 border-yellow-200">
                     <CardContent className="p-4">
-                      <div className={`w-8 h-8 bg-yellow-200 rounded-full mx-auto mb-2 flex items-center justify-center ${showMemberBadges ? 'animate-bounce' : ''}`}>
+                      <div className={`w-8 h-8 bg-yellow-200 rounded-full mx-auto mb-2 flex items-center justify-center ${showMemberBadges ? 'animate-[scale_1.5s_ease-in-out_infinite]' : ''}`} style={{
+                        animationKeyframes: showMemberBadges ? `
+                          @keyframes scale {
+                            0%, 100% { transform: scale(1); }
+                            25% { transform: scale(1.1); }
+                            75% { transform: scale(0.95); }
+                          }
+                        ` : undefined
+                      }}>
                         <span className="text-sm font-semibold text-yellow-700">8</span>
                       </div>
                       <p className="text-xs text-yellow-600">New Members</p>
