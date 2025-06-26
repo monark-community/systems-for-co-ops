@@ -60,7 +60,7 @@ const ConnectWalletButton = () => {
   }
 
   return (
-    <Button variant="outline" onClick={handleConnect}>
+    <Button onClick={handleConnect}>
       Connect Wallet
     </Button>
   );
