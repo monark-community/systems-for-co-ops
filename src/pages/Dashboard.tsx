@@ -1,22 +1,21 @@
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Users, Vote, Wallet, Plus, FileText, Clock, ChevronRight, Check, X, Search, TrendingUp } from "lucide-react";
+import { Users, Vote, Wallet, Plus, Search, TrendingUp, Clock } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import ConnectWalletButton from "@/components/ConnectWalletButton";
 import CoopSelector from "@/components/CoopSelector";
+import ProposalCard from "@/components/ProposalCard";
+import { Progress } from "@/components/ui/progress";
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const userAlias = "John Doe";
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
-  const [categoryFilter, setCategoryFilter] = useState("all");
   const [votes, setVotes] = useState<Record<number, 'agree' | 'deny' | null>>({});
 
   const handleVote = (proposalId: number, vote: 'agree' | 'deny') => {
@@ -90,96 +89,6 @@ const Dashboard = () => {
       category: "Community"
     }
   ];
-
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  };
-
-  const getBadgeClass = (status: string) => {
-    switch (status) {
-      case 'active': return 'bg-black text-white border-black';
-      case 'passed': return 'bg-green-100 text-green-800 border-green-300';
-      case 'denied': return 'bg-red-100 text-red-800 border-red-300';
-      case 'abandoned': return 'bg-gray-100 text-gray-600 border-gray-300';
-      default: return '';
-    }
-  };
-
-  const ProposalCard = ({ proposal, showVoting = false }: { proposal: any, showVoting?: boolean }) => {
-    const userVote = votes[proposal.id];
-    
-    return (
-      <div className="border rounded-lg p-4">
-        <div className="flex justify-between items-start mb-3">
-          <div className="flex-1">
-            <Link 
-              to={`/proposal/${proposal.id}`}
-              className="hover:underline"
-            >
-              <h4 className="font-semibold flex items-center gap-1">
-                {proposal.title}
-                <ChevronRight className="h-4 w-4" />
-              </h4>
-            </Link>
-            <p className="text-xs text-gray-500 mt-1 flex items-center">
-              <Clock className="h-3 w-3 mr-1" />
-              {formatDate(proposal.createdAt)}
-            </p>
-            {proposal.description && (
-              <p className="text-sm text-gray-600 mt-2">{proposal.description}</p>
-            )}
-          </div>
-          <Badge className={getBadgeClass(proposal.status)}>
-            {proposal.status.charAt(0).toUpperCase() + proposal.status.slice(1)}
-          </Badge>
-        </div>
-        <div className="space-y-2">
-          <div className="flex justify-between text-sm">
-            <span>Votes: {proposal.votes} / {proposal.totalVotes}</span>
-            {proposal.amount && <span>Amount: {proposal.amount}</span>}
-          </div>
-          <Progress value={(proposal.votes / proposal.totalVotes) * 100} className="h-2" />
-          {showVoting && (
-            <div className="flex gap-2 pt-2">
-              <Button 
-                size="sm" 
-                className={`flex-1 ${
-                  userVote === 'agree' 
-                    ? 'bg-green-100 text-green-800 hover:bg-green-200 border-green-300' 
-                    : 'border'
-                }`}
-                variant="outline"
-                onClick={() => handleVote(proposal.id, 'agree')}
-              >
-                <Check className="h-4 w-4 mr-1" />
-                {userVote === 'agree' ? 'Agreed' : 'Agree'}
-              </Button>
-              <Button 
-                size="sm" 
-                className={`flex-1 ${
-                  userVote === 'deny' 
-                    ? 'bg-red-100 text-red-800 hover:bg-red-200 border-red-300' 
-                    : 'border'
-                }`}
-                variant="outline"
-                onClick={() => handleVote(proposal.id, 'deny')}
-              >
-                <X className="h-4 w-4 mr-1" />
-                {userVote === 'deny' ? 'Denied' : 'Deny'}
-              </Button>
-            </div>
-          )}
-        </div>
-      </div>
-    );
-  };
 
   const recentActivity = [
     {
@@ -331,7 +240,13 @@ const Dashboard = () => {
               </CardHeader>
               <CardContent className="space-y-4">
                 {activeProposals.map((proposal) => (
-                  <ProposalCard key={proposal.id} proposal={proposal} showVoting={true} />
+                  <ProposalCard 
+                    key={proposal.id} 
+                    proposal={proposal} 
+                    showVoting={true}
+                    userVote={votes[proposal.id]}
+                    onVote={handleVote}
+                  />
                 ))}
               </CardContent>
             </Card>

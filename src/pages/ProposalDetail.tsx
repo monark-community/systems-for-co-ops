@@ -125,7 +125,7 @@ The garden will be managed by a volunteer committee of residents and will operat
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50">
       {/* Header */}
       <header className="bg-white/80 backdrop-blur-sm border-b border-gray-200">
-        <div className="container mx-auto px-4 py-4">
+        <div className="container mx-auto px-4 py-2">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div className="h-10 w-10 bg-gradient-to-br from-blue-600 to-green-600 rounded-lg flex items-center justify-center">
@@ -210,7 +210,7 @@ The garden will be managed by a volunteer committee of residents and will operat
                   <Progress value={(proposal.votes / proposal.totalVotes) * 100} className="h-3" />
                   
                   {proposal.status === 'active' && (
-                    <div className="flex gap-3 pt-2">
+                    <div className="flex gap-4 pt-2">
                       <Button 
                         className={`flex-1 ${
                           userVote === 'agree' 
